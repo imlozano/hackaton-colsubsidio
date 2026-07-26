@@ -201,12 +201,12 @@ export const comoFunciona = {
     },
     {
       titulo: "Quedas asegurado.",
-      detalle: "Él resuelve la cotización, el pago y tu póliza.",
+      detalle: "Ahí mismo se resuelve la cotización, el pago y tu póliza.",
     },
   ] satisfies PasoComoFunciona[],
 
   // REVISAR — encabezado de la barra ilustrada
-  recorrido: "Lo que pasa después de la entrega",
+  recorrido: "Lo que sigue con tu asesor",
 } as const;
 
 /* ---------------------------------------------------------------
@@ -223,9 +223,11 @@ export const faq = {
   preguntas: [
     {
       pregunta: "¿Necesito ser afiliado a Colsubsidio?",
-      // REVISAR — afirma condiciones de contratación
+      /** Antes afirmaba que no hace falta afiliación. Eso no sale de
+       *  docs/ y un jurado de Colsubsidio puede desmentirlo en vivo, así
+       *  que la respuesta deriva la condición a quien sí la conoce. */
       respuesta:
-        "No. Estos seguros están abiertos a cualquiera. Si además eres afiliado, díselo a tu asesor cuando hables con él.",
+        "Tu asesor te lo confirma según el producto que elijas. Algunos planes tienen condiciones distintas para afiliados.",
     },
     {
       pregunta: "¿Quién responde si tengo un siniestro?",
@@ -235,9 +237,11 @@ export const faq = {
     },
     {
       pregunta: "¿Puedo cancelar cuando quiera?",
-      // REVISAR — afirma condiciones de cancelación y devolución
+      /** Antes afirmaba que sí y cómo. Las condiciones de cancelación
+       *  son contractuales, no salen de docs/ y las fija la aseguradora:
+       *  la respuesta remite a la póliza en vez de comprometerlas. */
       respuesta:
-        "Sí, avisando a la aseguradora. Pregúntale a tu asesor cómo queda lo que ya pagaste antes de cancelar.",
+        "Las condiciones de cancelación las define la aseguradora y quedan escritas en tu póliza. Tu asesor te las explica antes de cerrar.",
     },
     {
       pregunta: "¿Cómo pago?",
