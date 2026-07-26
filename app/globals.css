@@ -16,31 +16,34 @@
   --color-current: currentColor;
   --color-inherit: inherit;
 
-  /* ---- Azul institucional ---- */
-  --color-blue-50: #eff5fb;
-  --color-blue-100: #d6e7f5;
-  --color-blue-200: #a9cfef;
-  --color-blue-300: #6fb3ec;
-  --color-blue-400: #2a94ee;
-  --color-blue-500: #005ba8; /* ★ MARCA — botón primario */
-  --color-blue-600: #004986;
-  --color-blue-700: #003868;
-  --color-blue-800: #002a4d;
-  --color-blue-900: #001d36;
-  --color-blue-950: #001222;
+  /* ---- Azul institucional — rampa anclada al 500 del logo oficial ----
+     H 205°. El 500 es el hex exacto de logo-colsubsidio.svg: si el azul
+     del logo y el del botón difieren, se nota lado a lado. */
+  --color-blue-50: #eff6fb;
+  --color-blue-100: #d5e8f6;
+  --color-blue-200: #a8d2f0;
+  --color-blue-300: #70b8eb;
+  --color-blue-400: #1d96ed;
+  --color-blue-500: #0067b1; /* ★ MARCA — botón primario, 5.6:1 sobre canvas */
+  --color-blue-600: #005694;
+  --color-blue-700: #004475;
+  --color-blue-800: #003357;
+  --color-blue-900: #00243d;
+  --color-blue-950: #001626;
 
-  /* ---- Amarillo tangram — superficie, nunca tinta ---- */
-  --color-yellow-50: #fbf8ef;
-  --color-yellow-100: #f6efd5;
-  --color-yellow-200: #f1e1a7;
-  --color-yellow-300: #f2d469;
-  --color-yellow-400: #faca1f;
-  --color-yellow-500: #fec700; /* ★ MARCA — 1.5:1, jamás texto */
-  --color-yellow-600: #cb9f00;
-  --color-yellow-700: #9d7b00;
-  --color-yellow-800: #755c00; /* ← el único amarillo válido para texto */
-  --color-yellow-900: #514000;
-  --color-yellow-950: #332800;
+  /* ---- Amarillo tangram — superficie, nunca tinta ----
+     H 49°, anclado al 500 del logo oficial. */
+  --color-yellow-50: #fdfaef;
+  --color-yellow-100: #faf4d6;
+  --color-yellow-200: #f9eba9;
+  --color-yellow-300: #fbe274;
+  --color-yellow-400: #ffd933;
+  --color-yellow-500: #ffd000; /* ★ MARCA — 1.4:1, jamás texto ni botón */
+  --color-yellow-600: #d4ad00;
+  --color-yellow-700: #a68700;
+  --color-yellow-800: #7d6600; /* ← el único amarillo válido para texto, 5.3:1 */
+  --color-yellow-900: #574700;
+  --color-yellow-950: #362c00;
 
   /* ---- Neutros ---- */
   --color-canvas: #f9f9f9; /* el lienzo: fondo por defecto, nunca blanco */

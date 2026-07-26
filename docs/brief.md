@@ -48,9 +48,9 @@ Blog, testimonios, contadores de estadísticas, carrusel, dark mode, login real,
 Los colores y tipografías están en `docs/marca.md`. Aquí solo el ritmo:
 
 - **Escala de espaciado:** 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96. Nada fuera de esa lista.
-- **Padding vertical entre secciones:** 64px móvil, 112px desktop. **Idéntico en todas.** El desorden visual casi siempre es espaciado inconsistente, no colores feos.
-- **Contenedor:** máx. 1180px, padding lateral 20px móvil / 40px desktop.
-- **Radios:** 14px tarjetas, píldora completa en botones e inputs.
+- **Padding vertical entre secciones:** 4rem móvil, 8rem desktop. **Idéntico en todas.** El desorden visual casi siempre es espaciado inconsistente, no colores feos.
+- **Contenedor:** máx. 1280px, padding lateral 20px móvil / 40px desktop.
+- **Radios:** 4px / 8px / 16px. La marca es geométrica, no blandita. Tarjetas a 8–16px. **Píldora completa SOLO en botones y chips** — los inputs no.
 - **Elevación:** el lienzo es `#F9F9F9` y las tarjetas son blancas. Eso ya crea jerarquía. Sombras casi imperceptibles o ninguna.
 - **Alineación:** solo el hero se centra. Todo lo demás se alinea a la izquierda.
 - **Grilla de tarjetas:** 1 columna móvil, 2 tablet, 3 desktop.
@@ -126,7 +126,7 @@ Las primas del prototipo son estimadas y así deben rotularse. No se presentan c
 
 - El **placeholder se escribe solo**, rotando entre 4 frases cada 3.5s (45ms por carácter). Se detiene al hacer foco. Es la única animación llamativa y comunica el producto sin explicarlo.
 - Los chips no son categorías ("Vida", "Hogar"), son **situaciones de vida**. Ese es el punto del reto: el usuario no habla en lenguaje de aseguradora.
-- Input de 60px de alto, píldora, borde `line`. Al hacer foco, borde `blue-500` con anillo suave. Botón circular `blue-500` con flecha blanca.
+- Input de 60px de alto, **radio 16px** (no píldora: la píldora es solo para botones y chips), borde `line`. Al hacer foco, borde `blue-500` con anillo suave. Botón circular `blue-500` con flecha blanca.
 
 ### Estado B — al enviar
 
