@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tokens de marca — fuente de verdad: docs/marca.md §2
+   Ningún hex vive fuera de este bloque.
+   ============================================================ */
+
+@theme {
+  /* ---- Reset de paletas por defecto de Tailwind ----
+     Solo existe la paleta de marca. `bg-gray-100` o `text-red-500`
+     no compilan, y eso es intencional. */
+  --color-*: initial;
+
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-inherit: inherit;
+
+  /* ---- Azul institucional ---- */
+  --color-blue-50: #eff5fb;
+  --color-blue-100: #d6e7f5;
+  --color-blue-200: #a9cfef;
+  --color-blue-300: #6fb3ec;
+  --color-blue-400: #2a94ee;
+  --color-blue-500: #005ba8; /* ★ MARCA — botón primario */
+  --color-blue-600: #004986;
+  --color-blue-700: #003868;
+  --color-blue-800: #002a4d;
+  --color-blue-900: #001d36;
+  --color-blue-950: #001222;
+
+  /* ---- Amarillo tangram — superficie, nunca tinta ---- */
+  --color-yellow-50: #fbf8ef;
+  --color-yellow-100: #f6efd5;
+  --color-yellow-200: #f1e1a7;
+  --color-yellow-300: #f2d469;
+  --color-yellow-400: #faca1f;
+  --color-yellow-500: #fec700; /* ★ MARCA — 1.5:1, jamás texto */
+  --color-yellow-600: #cb9f00;
+  --color-yellow-700: #9d7b00;
+  --color-yellow-800: #755c00; /* ← el único amarillo válido para texto */
+  --color-yellow-900: #514000;
+  --color-yellow-950: #332800;
+
+  /* ---- Neutros ---- */
+  --color-canvas: #f9f9f9; /* el lienzo: fondo por defecto, nunca blanco */
+  --color-surface: #ffffff; /* solo superficies elevadas */
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #525252;
+  --color-ink-mute: #8a8a8a;
+  --color-line: #e4e4e4;
+  --color-line-strong: #0a0a0a;
+
+  /* ---- Semánticos ---- */
+  --color-primary: var(--color-blue-500);
+  --color-primary-hover: var(--color-blue-600);
+  --color-accent: var(--color-yellow-500);
+  --color-focus: var(--color-blue-400);
+  --color-ok: #128a5e;
+
+  /* ============================================================
+     Tipografía — Geist / Geist Mono, con fallback a Inter Tight /
+     JetBrains Mono si la carga de Google Fonts falla.
+     ============================================================ */
+
+  --font-sans: var(--font-geist-sans), "Inter Tight", ui-sans-serif, system-ui,
+    -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace,
+    SFMono-Regular, monospace;
+
+  /* Escala tipográfica — brief §2. Cada rol trae su interlineado.
+     Los titulares nunca pasan de peso 600. */
+  --text-hero: 2.125rem; /* 34px móvil */
+  --text-hero--line-height: 0.95;
+  --text-hero--letter-spacing: -0.03em;
+  --text-hero--font-weight: 600;
+
+  --text-hero-lg: 3.75rem; /* 60px desktop */
+  --text-hero-lg--line-height: 0.95;
+  --text-hero-lg--letter-spacing: -0.03em;
+  --text-hero-lg--font-weight: 600;
+
+  --text-titulo: 1.625rem; /* 26px móvil */
+  --text-titulo--line-height: 1.05;
+  --text-titulo--letter-spacing: -0.03em;
+  --text-titulo--font-weight: 600;
+
+  --text-titulo-lg: 2.5rem; /* 40px desktop */
+  --text-titulo-lg--line-height: 1;
+  --text-titulo-lg--letter-spacing: -0.03em;
+  --text-titulo-lg--font-weight: 600;
+
+  --text-subtitulo: 1.1875rem; /* 19px móvil */
+  --text-subtitulo--line-height: 1.2;
+  --text-subtitulo--letter-spacing: -0.02em;
+  --text-subtitulo--font-weight: 500;
+
+  --text-subtitulo-lg: 1.375rem; /* 22px desktop */
+  --text-subtitulo-lg--line-height: 1.2;
+  --text-subtitulo-lg--letter-spacing: -0.02em;
+  --text-subtitulo-lg--font-weight: 500;
+
+  --text-cuerpo: 1rem; /* 16px móvil */
+  --text-cuerpo--line-height: 1.6;
+
+  --text-cuerpo-lg: 1.0625rem; /* 17px desktop */
+  --text-cuerpo-lg--line-height: 1.6;
+
+  --text-eyebrow: 0.8125rem; /* 13px, mono, uppercase */
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.08em;
+
+  --text-prima: 1.875rem; /* 30px móvil */
+  --text-prima--line-height: 1;
+  --text-prima-lg: 2.625rem; /* 42px desktop */
+  --text-prima-lg--line-height: 1;
+
+  --tracking-titular: -0.03em;
+  --tracking-eyebrow: 0.08em;
+
+  /* ============================================================
+     Espaciado — 4/8/12/16/24/32/48/64/96 y nada más.
+     Se anula la escala dinámica de Tailwind para que `p-7` no exista.
+     ============================================================ */
+
+  --spacing: initial;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px; /* excepción: padding lateral del contenedor, móvil */
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px; /* excepción: padding lateral del contenedor, desktop */
+  --spacing-11: 44px; /* excepción: área táctil mínima accesible */
+  --spacing-12: 48px;
+  --spacing-16: 64px; /* ritmo de sección, móvil — 4rem */
+  --spacing-24: 96px;
+  --spacing-32: 128px; /* ritmo de sección, desktop — 8rem */
+
+  /* ---- Contenedor ---- */
+  --container-page: 1280px;
+  --container-prosa: 65ch; /* ancho máximo de párrafo */
+
+  /* ============================================================
+     Radios — geometría, no blandura. Píldora solo en botones y chips.
+     ============================================================ */
+
+  --radius-*: initial;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+
+  /* ---- Movimiento — brief §2 ---- */
+  --ease-marca: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-cuerpo);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Mobile-first: se prueba a 390px, jamás hay scroll horizontal. */
+    overflow-x: hidden;
+  }
+
+  /* Todas las cifras son mono y tabulares: en seguros la legibilidad
+     de datos manda sobre la estética. */
+  :is(.cifra, [data-cifra]) {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background-color: var(--color-yellow-500);
+    color: var(--color-ink);
+  }
+}
+
+/* prefers-reduced-motion desactiva todo el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
