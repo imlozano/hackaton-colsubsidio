@@ -57,11 +57,25 @@ export function Proteger({ onElegir }: Props) {
           return (
             <li key={tarjeta.categoria}>
               {/* Blanca sobre lienzo y con borde, pero sin sombra: las
-                  tres cosas a la vez están prohibidas. */}
+                  tres cosas a la vez están prohibidas.
+
+                  El hover sube 4px y pasa el borde a blue-500, nada más.
+                  Quien comunica el estado es el borde; el desplazamiento
+                  solo acompaña. Sin sombra nueva, sin escala, sin girar
+                  el icono.
+
+                  La transición nombra `translate` y no `transform`:
+                  Tailwind v4 compila `-translate-y-1` a la propiedad
+                  `translate`, y apuntando a `transform` no animaría nada.
+
+                  El `hover:` de Tailwind v4 ya viene dentro de
+                  `@media (hover:hover)`, así que en Safari móvil no se
+                  aplica y la tarjeta no se queda con el borde azul
+                  pegado después de tocarla. */}
               <button
                 type="button"
                 onClick={() => onElegir(tarjeta.precarga)}
-                className="flex h-full w-full flex-col items-start rounded-lg border border-line bg-surface p-6 text-left transition-colors duration-150 hover:border-blue-300"
+                className="flex h-full w-full flex-col items-start rounded-lg border border-line bg-surface p-6 text-left transition-[translate,border-color] duration-150 ease-marca hover:-translate-y-1 hover:border-blue-500"
               >
                 <Icono
                   aria-hidden="true"

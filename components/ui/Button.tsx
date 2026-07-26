@@ -22,7 +22,7 @@ export function Button({
 }: Props) {
   return (
     <button
-      className={`inline-flex min-h-11 items-center justify-center rounded-full text-cuerpo transition-colors duration-150 disabled:opacity-50 ${VARIANTES[variante]} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center rounded-full text-cuerpo transition-colors duration-150 ease-marca disabled:opacity-50 ${VARIANTES[variante]} ${className}`}
       {...props}
     />
   );

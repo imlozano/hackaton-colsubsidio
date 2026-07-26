@@ -304,14 +304,17 @@ export function Hero({ precarga = null }: Props) {
                   onChange={(evento) => setValor(evento.target.value)}
                   onFocus={() => setEnfocado(true)}
                   onBlur={() => setEnfocado(false)}
-                  /* 60px de alto los fija el brief §4 para este input. */
-                  className="h-[60px] w-full rounded-lg border border-line bg-surface pr-16 pl-6 text-cuerpo text-ink placeholder:text-ink-mute focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:outline-none"
+                  /* 60px de alto los fija el brief §4 para este input.
+                     El anillo de foco es un box-shadow, por eso la
+                     transición lo nombra junto al borde. Ningún asset de
+                     la ilustración se mueve al enfocar. */
+                  className="h-[60px] w-full rounded-lg border border-line bg-surface pr-16 pl-6 text-cuerpo text-ink transition-[border-color,box-shadow] duration-150 ease-marca placeholder:text-ink-mute focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:outline-none"
                 />
                 {/* Circular, no píldora: por eso no usa Button. */}
                 <button
                   type="submit"
                   aria-label={hero.etiquetaEnviar}
-                  className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full bg-blue-500 text-white transition-colors duration-150 hover:bg-blue-600"
+                  className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full bg-blue-500 text-white transition-colors duration-150 ease-marca hover:bg-blue-600"
                 >
                   <ArrowRight
                     aria-hidden="true"
