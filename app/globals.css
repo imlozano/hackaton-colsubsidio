@@ -237,6 +237,44 @@
     both;
 }
 
+/* ============================================================
+   Entrada de sección al llegar al viewport
+   ------------------------------------------------------------
+   Mismo motivo que la excepción del hero, y misma solución.
+
+   Con el `whileInView` normal de framer, el estado inicial viaja en
+   `initial` y por tanto en el HTML del servidor: una sección sin
+   JavaScript se quedaría en `opacity: 0` para siempre, esperando un
+   observador que nunca corre.
+
+   Aquí el estado por defecto es **visible**. El JavaScript solo marca
+   la sección con `data-entra`, y esa marca es la que esconde y luego
+   anima. Sin JavaScript no hay marca, no hay keyframe, y el contenido
+   se lee tal cual.
+
+   `espera` esconde; `dentro` anima. Una sola vez: el componente usa
+   `once`, así que nunca vuelve a `espera`.
+   ============================================================ */
+@keyframes entra-seccion {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-entra="espera"] .entra {
+  opacity: 0;
+}
+
+[data-entra="dentro"] .entra {
+  animation: entra-seccion 400ms var(--ease-marca) var(--entra-retraso, 0ms)
+    both;
+}
+
 /* prefers-reduced-motion desactiva todo el movimiento. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -249,5 +287,12 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* `espera` esconde con `opacity`, no con una animación, así que las
+     reglas de arriba no lo alcanzan. Sin esto, quien pide menos
+     movimiento vería el contenido oculto hasta llegar a él. */
+  [data-entra="espera"] .entra {
+    opacity: 1 !important;
   }
 }

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
+import { useEntrada } from "@/components/ui/useEntrada";
 import { faq } from "@/lib/data";
 
 /** La única curva de la página. Nada rebota, nada sobrepasa. */
@@ -35,11 +36,14 @@ const APERTURA = { duration: 0.18, ease: SUAVE };
  * en `lib/data.ts`.
  */
 export function Faq() {
+  const { ref, entra } = useEntrada();
   const reducido = useReducedMotion();
   const [abierta, setAbierta] = useState<string | null>(null);
 
   return (
     <section
+      ref={ref}
+      data-entra={entra}
       aria-labelledby="faq-titulo"
       className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32"
     >
@@ -50,7 +54,8 @@ export function Faq() {
         {faq.titulo}
       </h2>
 
-      <div className="mt-12 max-w-prosa border-t border-line">
+      {/* Sin escalonado: el FAQ entra de una pieza. */}
+      <div className="entra mt-12 max-w-prosa border-t border-line">
         {faq.preguntas.map(({ pregunta, respuesta }, i) => {
           const idPanel = `faq-panel-${i}`;
           const idBoton = `faq-boton-${i}`;

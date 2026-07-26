@@ -3,8 +3,10 @@
 import { Bike, Flower2, House, PawPrint, Plane, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { useEntrada } from "@/components/ui/useEntrada";
 import { proteger } from "@/lib/data";
 import type { CategoriaId } from "@/lib/types";
+import type { CSSProperties } from "react";
 
 /* El icono no es copy, así que no vive en data.ts: allí queda la
    categoría y aquí se resuelve el dibujo. */
@@ -34,28 +36,37 @@ type Props = {
  * Aquí vive el ancla `#proteger` a la que apuntan el nav y el footer.
  */
 export function Proteger({ onElegir }: Props) {
+  const { ref, entra } = useEntrada();
+
   return (
     <section
+      ref={ref}
+      data-entra={entra}
       id="proteger"
       aria-labelledby="proteger-titulo"
       className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32"
     >
       <h2
         id="proteger-titulo"
-        className="text-titulo text-balance md:text-titulo-lg"
+        className="entra text-titulo text-balance md:text-titulo-lg"
       >
         {proteger.titulo}
       </h2>
-      <p className="mt-4 max-w-prosa text-cuerpo text-ink-soft md:text-cuerpo-lg">
+      <p className="entra mt-4 max-w-prosa text-cuerpo text-ink-soft md:text-cuerpo-lg">
         {proteger.apoyo}
       </p>
 
       <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {proteger.tarjetas.map((tarjeta) => {
+        {proteger.tarjetas.map((tarjeta, i) => {
           const Icono = ICONOS[tarjeta.categoria];
 
           return (
-            <li key={tarjeta.categoria}>
+            /* Escalonado de 60ms: la rejilla se arma de una en una. */
+            <li
+              key={tarjeta.categoria}
+              style={{ "--entra-retraso": `${i * 60}ms` } as CSSProperties}
+              className="entra"
+            >
               {/* Blanca sobre lienzo y con borde, pero sin sombra: las
                   tres cosas a la vez están prohibidas.
 

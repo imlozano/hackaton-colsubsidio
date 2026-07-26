@@ -1,4 +1,9 @@
+"use client";
+
+import type { CSSProperties } from "react";
+
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { useEntrada } from "@/components/ui/useEntrada";
 import { comoFunciona } from "@/lib/data";
 
 /**
@@ -13,22 +18,31 @@ import { comoFunciona } from "@/lib/data";
  * pantalla sin romper la rejilla de 1280px.
  */
 export function ComoFunciona() {
+  const { ref, entra } = useEntrada();
+
   return (
     <section
+      ref={ref}
+      data-entra={entra}
       aria-labelledby="como-funciona-titulo"
       className="bg-yellow-500 text-ink"
     >
       <div className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32">
         <h2
           id="como-funciona-titulo"
-          className="text-titulo text-balance md:text-titulo-lg"
+          className="entra text-titulo text-balance md:text-titulo-lg"
         >
           {comoFunciona.titulo}
         </h2>
 
         <ol className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
           {comoFunciona.pasos.map((paso, i) => (
-            <li key={paso.titulo}>
+            /* Escalonado de 90ms: los pasos se leen en orden. */
+            <li
+              key={paso.titulo}
+              style={{ "--entra-retraso": `${i * 90}ms` } as CSSProperties}
+              className="entra"
+            >
               <span className="font-mono text-eyebrow tracking-eyebrow tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -48,7 +62,10 @@ export function ComoFunciona() {
             agente después de la entrega, no un indicador vivo. Va sobre
             superficie blanca: sin borde ni sombra encima, que las tres
             cosas juntas están prohibidas. */}
-        <div className="mt-16 rounded-lg bg-surface p-6 md:max-w-prosa md:p-8">
+        <div
+          style={{ "--entra-retraso": "270ms" } as CSSProperties}
+          className="entra mt-16 rounded-lg bg-surface p-6 md:max-w-prosa md:p-8"
+        >
           <h3 className="font-mono text-eyebrow tracking-eyebrow text-ink-soft uppercase">
             {comoFunciona.recorrido}
           </h3>
