@@ -66,10 +66,12 @@
      JetBrains Mono si la carga de Google Fonts falla.
      ============================================================ */
 
-  --font-sans: var(--font-geist-sans), "Inter Tight", ui-sans-serif, system-ui,
+  --font-sans:
+    var(--font-geist-sans), "Inter Tight", ui-sans-serif, system-ui,
     -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace,
-    SFMono-Regular, monospace;
+  --font-mono:
+    var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
+    monospace;
 
   /* Escala tipográfica — brief §2. Cada rol trae su interlineado.
      Los titulares nunca pasan de peso 600. */
@@ -200,12 +202,50 @@
   }
 }
 
+/* ============================================================
+   EXCEPCIÓN ACOTADA — la entrada del hero no depende de la hidratación
+   ------------------------------------------------------------
+   Framer Motion serializa dentro del HTML del servidor lo que se le
+   pasa en `initial`. Es comportamiento documentado de la librería, no
+   un fallo: el titular salía con `opacity:0` y el hero quedaba en
+   blanco hasta que el bundle hidrataba. Sobre datos móviles eso es una
+   pantalla vacía delante del jurado.
+
+   Por eso, y solo para los cinco elementos de contenido del hero
+   —titular, subtítulo, input, chips y línea de confianza—, la entrada
+   se hace con estos keyframes, que corren sin una línea de JavaScript.
+
+   Todo lo demás sigue con Framer Motion: la ilustración, `HeroScene`,
+   `HeroAsset` y el resto de la aplicación. No se migró nada.
+
+   El retraso lo inyecta el componente en `--entrada-retraso`, que es
+   donde vive el guion de la coreografía.
+   ============================================================ */
+@keyframes entrada-hero {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.entrada-hero {
+  animation: entrada-hero 400ms var(--ease-marca) var(--entrada-retraso, 0ms)
+    both;
+}
+
 /* prefers-reduced-motion desactiva todo el movimiento. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    /* Sin esto, un elemento con `both` y 240ms de retraso se queda
+       invisible ese cuarto de segundo antes de aparecer de golpe. */
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;

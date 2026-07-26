@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import type { CSSProperties } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 import { HeroScene } from "@/components/hero/HeroScene";
@@ -16,28 +17,29 @@ const ENTRADA = { duration: 0.4, ease: SUAVE };
 const SALIDA_TITULAR = { duration: 0.25, ease: SUAVE };
 
 /**
- * Bloque 1 — la escena se arma una sola vez, en segundos desde el load.
+ * Coreografía de entrada del contenido, en ms desde el load.
  *
- * El contenido va primero y la ilustración detrás: `HeroScene` arranca
- * en 0.4, cuando esto ya terminó. Esa jerarquía no se negocia.
+ * El contenido va primero y la ilustración detrás: `HeroScene` no
+ * arranca hasta 300ms, cuando esto ya casi terminó. Esa jerarquía no se
+ * negocia.
+ *
+ * Estos cinco **no usan framer-motion**. La librería serializa `initial`
+ * en el HTML del servidor y el hero quedaba en blanco hasta hidratar;
+ * la excepción está documentada en `app/globals.css` bajo la clase
+ * `.entrada-hero`. La ilustración sí sigue con framer-motion.
  */
 const ENTRA = {
   titulo: 0,
-  subtitulo: 0.08,
-  input: 0.16,
-  chips: 0.24,
-  confianza: 0.32,
+  subtitulo: 60,
+  input: 120,
+  chips: 180,
+  confianza: 240,
 } as const;
 
-/**
- * Fade + 12px de subida.
- *
- * Con movimiento reducido solo se anulan duración y retraso: el elemento
- * aparece ya puesto. Nunca se cambia el `initial`, porque el servidor no
- * conoce la preferencia y el marcado no coincidiría al hidratar.
- */
-function entrada(retraso: number, reducido: boolean | null) {
-  return reducido ? { duration: 0, delay: 0 } : { ...ENTRADA, delay: retraso };
+/** Pasa el retraso al keyframe CSS. Viaja en el HTML del servidor, así
+ *  que funciona con JavaScript desactivado. */
+function retraso(ms: number): CSSProperties {
+  return { "--entrada-retraso": `${ms}ms` } as CSSProperties;
 }
 
 /* Placeholder que se escribe solo — brief §4. */
@@ -195,11 +197,12 @@ export function Hero({ precarga = null }: Props) {
           transition={reducido ? { duration: 0 } : SALIDA_TITULAR}
           className="w-full overflow-hidden text-center"
         >
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={entrada(ENTRA.titulo, reducido)}
-            className="text-hero text-balance md:text-hero-lg"
+          {/* La clase `entrada-hero` va en el h1 y no en el motion.div
+              de arriba: si compartieran nodo, el keyframe y el transform
+              que escribe framer para `layout` se pisarían. */}
+          <h1
+            style={retraso(ENTRA.titulo)}
+            className="entrada-hero text-hero text-balance md:text-hero-lg"
           >
             {hero.titulo.map((linea, i) => (
               /* El espacio entre líneas es un nodo de texto real: dos
@@ -211,15 +214,13 @@ export function Hero({ precarga = null }: Props) {
                 <span className="block">{linea}</span>
               </Fragment>
             ))}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={entrada(ENTRA.subtitulo, reducido)}
-            className="mx-auto mt-6 max-w-prosa-hero text-cuerpo text-ink-soft md:text-cuerpo-lg"
+          </h1>
+          <p
+            style={retraso(ENTRA.subtitulo)}
+            className="entrada-hero mx-auto mt-6 max-w-prosa-hero text-cuerpo text-ink-soft md:text-cuerpo-lg"
           >
             {hero.subtitulo}
-          </motion.p>
+          </p>
           <div className="h-12" />
         </motion.div>
 
@@ -275,19 +276,10 @@ export function Hero({ precarga = null }: Props) {
             <motion.form
               key="entrada"
               layout
-              /* El retraso vive en la variante y no en el `transition`
-                 suelto: ahí gobernaría también la salida y el input
-                 tardaría 160ms en irse al enviar. */
-              initial={{ opacity: 0, y: 12 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                transition: entrada(ENTRA.input, reducido),
-              }}
-              exit={{
-                opacity: 0,
-                transition: reducido ? { duration: 0 } : ENTRADA,
-              }}
+              /* Sin `initial` ni `animate`: la entrada la hace el
+                 keyframe CSS sobre el div de dentro. Aquí solo queda la
+                 salida, que sí necesita framer por AnimatePresence. */
+              exit={{ opacity: 0 }}
               transition={reducido ? { duration: 0 } : ENTRADA}
               onSubmit={(evento) => {
                 evento.preventDefault();
@@ -298,7 +290,10 @@ export function Hero({ precarga = null }: Props) {
               <label htmlFor="entrada-hero" className="sr-only">
                 {hero.etiquetaEntrada}
               </label>
-              <div className="relative">
+              <div
+                style={retraso(ENTRA.input)}
+                className="entrada-hero relative"
+              >
                 <input
                   id="entrada-hero"
                   ref={entradaRef}
@@ -338,21 +333,18 @@ export function Hero({ precarga = null }: Props) {
             <motion.ul
               key="chips"
               layout
-              initial={{ opacity: 0, y: 12 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                transition: entrada(ENTRA.chips, reducido),
-              }}
-              exit={{
-                opacity: 0,
-                transition: reducido ? { duration: 0 } : SALIDA_TITULAR,
-              }}
+              /* La entrada la hacen los <li> con el keyframe CSS; aquí
+                 solo queda la salida de AnimatePresence. */
+              exit={{ opacity: 0 }}
               transition={reducido ? { duration: 0 } : SALIDA_TITULAR}
               className="mt-6 flex flex-wrap justify-center gap-2"
             >
               {hero.chips.map((chip) => (
-                <li key={chip}>
+                <li
+                  key={chip}
+                  style={retraso(ENTRA.chips)}
+                  className="entrada-hero"
+                >
                   <Button variante="chip" onClick={() => enviar(chip)}>
                     {chip}
                   </Button>
@@ -362,15 +354,13 @@ export function Hero({ precarga = null }: Props) {
           )}
         </AnimatePresence>
 
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={entrada(ENTRA.confianza, reducido)}
-          className="mt-16 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase"
+        <p
+          style={retraso(ENTRA.confianza)}
+          className="entrada-hero mt-16 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase"
         >
           <span>{hero.confianza.aliados}</span>
           <span>{hero.confianza.sellos}</span>
-        </motion.p>
+        </p>
       </div>
     </section>
   );

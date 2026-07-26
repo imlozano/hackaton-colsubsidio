@@ -11,29 +11,32 @@ const SUAVE = [0.22, 1, 0.36, 1] as const;
 const ENTRADA_DUR = 0.4;
 
 /**
- * Bloque 1 — la escena se arma una sola vez, en segundos desde el load.
+ * La escena se arma una sola vez, en segundos desde el load.
  *
  * Va entera por detrás del contenido: el titular abre en 0 y la
- * ilustración no empieza hasta 0.4. Esa jerarquía es el guion.
+ * ilustración no empieza hasta 0.3, cuando el contenido ya está casi
+ * puesto. Esa jerarquía es el guion. Con los 400ms de duración, lo
+ * último —los destellos— cierra en 1s.
  *
- * El patinete no estaba en el guion; entra con la casa y el portátil
- * porque es el tercer objeto de la escena, no un personaje.
+ * Aquí sí se usa framer-motion: que la ilustración dependa de la
+ * hidratación es aceptable, porque es decorativa. El contenido no puede
+ * permitírselo y por eso entra con keyframes CSS (ver `globals.css`).
  */
 const ENTRADA_SEG: Record<string, number> = {
-  platform: 0.4,
-  "number-2": 0.48,
-  "number-4": 0.48,
-  slash: 0.48,
-  "number-7": 0.48,
-  house: 0.56,
-  laptop: 0.56,
-  scooter: 0.56,
-  "mascot-left": 0.64,
-  "mascot-right": 0.64,
-  "cloud-left": 0.72,
-  "cloud-right": 0.72,
-  "sparkle-1": 0.8,
-  "sparkle-2": 0.8,
+  platform: 0.3,
+  "number-2": 0.36,
+  "number-4": 0.36,
+  slash: 0.36,
+  "number-7": 0.36,
+  house: 0.42,
+  laptop: 0.42,
+  scooter: 0.42,
+  "mascot-left": 0.48,
+  "mascot-right": 0.48,
+  "cloud-left": 0.54,
+  "cloud-right": 0.54,
+  "sparkle-1": 0.6,
+  "sparkle-2": 0.6,
 };
 
 /**
