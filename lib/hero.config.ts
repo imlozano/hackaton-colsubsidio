@@ -15,15 +15,18 @@ export type HeroAssetConfig = {
   id: string;
   src: string;
   group: "background" | "foreground";
-  /** Borde izquierdo, en % del ancho del escenario. */
+  /** Borde izquierdo, en % del ancho del contenedor. */
   x: number;
-  /** Borde superior, en % del alto del escenario. */
+  /** Borde superior, en % del alto del contenedor. */
   y: number;
-  /** Ancho del asset, en % del ancho del escenario. La altura va en auto. */
+  /** Ancho del asset, en % del ancho del contenedor. La altura va en auto. */
   width: number;
   /** Grados. Positivo = horario. */
   rotation?: number;
   scale?: number;
+  /** Opacidad final. Es lo que separa los planos: el fondo se atenúa y
+   *  el primer plano queda a 1. Por defecto 1. */
+  opacity?: number;
   /** `transform-origin`. Por defecto "center". */
   origin?: string;
   z: number;
@@ -32,38 +35,31 @@ export type HeroAssetConfig = {
   priority?: boolean;
 };
 
-/** Ancho del escenario cuando deja de crecer. Es `--container-page`. */
-export const ANCHO_ESCENARIO = 1280;
+/** Ancho del contenedor cuando deja de crecer. */
+export const ANCHO_ESCENARIO = 900;
 
 /**
- * El orden del array es el orden de pintado.
+ * El orden del array es el orden de pintado, de atrás hacia adelante.
  *
- * `z` acompaña a ese orden en lugar de contradecirlo: un asset con
- * `rotation` o `scale` crea contexto de apilamiento y su `z-index` deja
- * de competir con el de sus hermanos, así que el orden del array es lo
- * único en lo que se puede confiar siempre. Mantén `z` ascendente.
+ * La escena ya no rodea al texto: vive en su propio contenedor, debajo
+ * del contenido. La regla que la gobierna es que **cada pieza toque o
+ * solape a otra**. Un asset con aire alrededor está mal colocado: la
+ * oclusión es lo único que crea profundidad aquí.
  *
- * `group` y `animation` todavía no los lee nadie. Están para que la
- * etapa de animaciones no tenga que tocar esta estructura.
- *
- * **Toda la escena es de desktop.** A 390px el escenario mide 219px de
- * alto: las mascotas quedaban en 43px y las cifras del 24/7 en 15px, y
- * eso no se lee como ilustración sino como iconos sueltos pegados al
- * borde. En móvil el hero se queda solo con el contenido, que es más
- * limpio que una ilustración ilegible. Por eso los catorce llevan
- * `hideOnMobile`.
+ * En móvil solo queda el núcleo —plataforma, cifras y mascotas— con las
+ * mismas reglas de apoyo y oclusión. Todo lo demás lleva `hideOnMobile`.
  */
 export const escenaHero: HeroAssetConfig[] = [
-  /* --- Fondo. Las nubes son lo más pequeño y lo más alto: es lo que
-     da la sensación de lejanía sin recurrir a ningún efecto. --- */
+  /* z1 — Nubes. Esquinas de arriba, atenuadas, tocando la fila. */
   {
     id: "cloud-left",
     src: "/assets/hero/effects/cloud-left.webp",
     group: "background",
-    x: 1,
-    y: -5,
-    width: 12,
+    x: 9,
+    y: 6,
+    width: 9,
     rotation: -4,
+    opacity: 0.7,
     z: 1,
     animation: "none",
     hideOnMobile: true,
@@ -72,46 +68,70 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "cloud-right",
     src: "/assets/hero/effects/cloud-right.webp",
     group: "background",
-    x: 87,
-    y: -7,
-    width: 12,
-    /* Es el mismo dibujo que cloud-left: sin un giro distinto se lee
-       como la misma nube pegada dos veces. */
+    x: 74,
+    y: 4,
+    width: 9,
     rotation: 6,
+    opacity: 0.7,
     z: 2,
     animation: "none",
     hideOnMobile: true,
   },
 
-  /* --- La plataforma es base, no protagonista. ---
-     Deliberadamente pequeña: sostiene al 24/7 y nada más. El encuadre
-     arranca por encima de la línea de vigilancia, pero ahí arriba está
-     vacío —la tinta del cojín empieza al 28% del marco—, así que el
-     cojín entero cae en la banda libre y deja 37px de aire entre el
-     texto y la ilustración. Sigue siendo más ancho que el 24/7. */
+  /* z2 — Flechas. Tres copias giradas que encadenan casa → portátil →
+     patinete y bajan al núcleo. Van al fondo, detrás de los objetos. */
   {
-    id: "platform",
-    src: "/assets/hero/objects/platform.webp",
+    id: "arrow-1",
+    src: "/assets/hero/effects/arrow.webp",
     group: "background",
-    x: 42.2,
-    y: 86.8,
-    width: 15.5,
+    x: 21,
+    y: 19,
+    width: 20,
+    rotation: -18,
+    opacity: 0.8,
     z: 3,
     animation: "none",
     hideOnMobile: true,
   },
+  {
+    id: "arrow-2",
+    src: "/assets/hero/effects/arrow.webp",
+    group: "background",
+    x: 50,
+    y: 19,
+    width: 20,
+    rotation: -18,
+    opacity: 0.8,
+    z: 4,
+    animation: "none",
+    hideOnMobile: true,
+  },
+  {
+    id: "arrow-3",
+    src: "/assets/hero/effects/arrow.webp",
+    group: "background",
+    x: 60,
+    y: 36,
+    width: 17,
+    rotation: 38,
+    opacity: 0.8,
+    z: 5,
+    animation: "none",
+    hideOnMobile: true,
+  },
 
-  /* --- Objetos. Entran hacia el centro en vez de pegarse al borde:
-     encuadran el titular y el input en lugar de tirar de la mirada
-     hacia fuera. El contenido ocupa del 21.9% al 78.1%. --- */
+  /* z3 — Fila de fondo. Escala y opacidad por debajo del primer plano:
+     es lo que la manda hacia atrás sin recurrir a ningún desenfoque. */
   {
     id: "house",
     src: "/assets/hero/objects/house.webp",
     group: "background",
-    x: 2,
-    y: 33,
-    width: 19,
-    z: 4,
+    x: 14,
+    y: 16,
+    width: 15,
+    scale: 0.92,
+    opacity: 0.92,
+    z: 6,
     animation: "none",
     hideOnMobile: true,
   },
@@ -119,10 +139,12 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "laptop",
     src: "/assets/hero/objects/laptop.webp",
     group: "background",
-    x: 79,
-    y: 29,
-    width: 18,
-    z: 5,
+    x: 40,
+    y: 16,
+    width: 14,
+    scale: 0.92,
+    opacity: 0.92,
+    z: 7,
     animation: "none",
     hideOnMobile: true,
   },
@@ -130,24 +152,107 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "scooter",
     src: "/assets/hero/objects/scooter.webp",
     group: "background",
-    x: 80,
-    y: 63,
-    width: 19,
-    z: 6,
+    x: 66,
+    y: 18,
+    width: 14,
+    scale: 0.92,
+    opacity: 0.92,
+    z: 8,
     animation: "none",
     hideOnMobile: true,
   },
 
-  /* --- Efectos. Pequeños y a distinta altura, para romper la simetría
-     de espejo entre los dos flancos. --- */
+  /* z4 — La plataforma. Centrada, apoyada abajo y sangrando por debajo
+     del borde: el suelo continúa fuera de cuadro. */
+  {
+    id: "platform",
+    src: "/assets/hero/objects/platform.webp",
+    group: "background",
+    x: 26,
+    y: 65,
+    width: 48,
+    z: 9,
+    animation: "none",
+  },
+
+  /* z5 — El 24/7, apoyado sobre el cojín. La base de cada cifra se mete
+     dentro de la superficie; ninguna queda al aire. Sin `rotation`: con
+     transform el z queda encerrado en el envoltorio. */
+  {
+    id: "number-2",
+    src: "/assets/hero/numbers/number-2.webp",
+    group: "foreground",
+    x: 32.2,
+    y: 61,
+    width: 11,
+    z: 10,
+    animation: "none",
+  },
+  {
+    id: "number-4",
+    src: "/assets/hero/numbers/number-4.webp",
+    group: "foreground",
+    x: 40.2,
+    y: 61,
+    width: 11,
+    z: 11,
+    animation: "none",
+  },
+  {
+    id: "slash",
+    src: "/assets/hero/numbers/slash.webp",
+    group: "foreground",
+    x: 48.2,
+    y: 61,
+    width: 11,
+    z: 12,
+    animation: "none",
+  },
+  {
+    id: "number-7",
+    src: "/assets/hero/numbers/number-7.webp",
+    group: "foreground",
+    x: 56.2,
+    y: 61,
+    width: 11,
+    z: 13,
+    animation: "none",
+  },
+
+  /* z6 — Las mascotas se sientan encima del 2 y del 7 y tapan parte de
+     su borde superior. Esa oclusión es lo que da la profundidad: si no
+     se solapan, la escena se deshace en piezas sueltas. */
+  {
+    id: "mascot-left",
+    src: "/assets/hero/characters/mascot-left.webp",
+    group: "foreground",
+    x: 31,
+    y: 48,
+    width: 14,
+    z: 14,
+    animation: "none",
+  },
+  {
+    id: "mascot-right",
+    src: "/assets/hero/characters/mascot-right.webp",
+    group: "foreground",
+    x: 55,
+    y: 48,
+    width: 14,
+    z: 15,
+    animation: "none",
+  },
+
+  /* z7 — Destellos en los huecos que quedan entre las flechas. */
   {
     id: "sparkle-1",
     src: "/assets/hero/effects/sparkle-1.webp",
     group: "background",
-    x: 16,
-    y: 24,
-    width: 6,
-    z: 7,
+    x: 34,
+    y: 38,
+    width: 4,
+    opacity: 0.8,
+    z: 16,
     animation: "none",
     hideOnMobile: true,
   },
@@ -155,94 +260,11 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "sparkle-2",
     src: "/assets/hero/effects/sparkle-2.webp",
     group: "background",
-    x: 79,
-    y: 17,
-    width: 6,
-    z: 8,
-    animation: "none",
-    hideOnMobile: true,
-  },
-
-  /* La flecha se fue. Solo servía para llevar la mirada al 24/7, y el
-     24/7 es ahora lo último de la jerarquía: subrayarlo con una flecha
-     era justo lo contrario de lo que tiene que pasar. Quitarla además
-     despeja la banda inferior. El asset sigue en public/assets/hero. */
-
-  /* --- El 24/7 cierra la jerarquía, detrás de H1, input y CTA. Va al
-     tamaño de un sello, no de un titular: apoya el mensaje de asistencia
-     sin disputarle la atención al contenido. Paso de 2.7% entre marcos,
-     centrado en el 50%.
-     Ninguna lleva `rotation`, y no es un descuido: con transform el
-     envoltorio crea contexto de apilamiento, el z de la cifra queda
-     encerrado dentro y la plataforma (z:3, sin transform) le pasa por
-     encima. Si le pones giro a una cifra, desaparece tras el cojín. */
-  {
-    id: "number-2",
-    src: "/assets/hero/numbers/number-2.webp",
-    group: "foreground",
-    x: 44,
-    y: 85.3,
-    width: 3.8,
-    z: 10,
-    animation: "none",
-    hideOnMobile: true,
-  },
-  {
-    id: "number-4",
-    src: "/assets/hero/numbers/number-4.webp",
-    group: "foreground",
-    x: 46.7,
-    y: 85.7,
-    width: 3.8,
-    z: 11,
-    animation: "none",
-    hideOnMobile: true,
-  },
-  {
-    id: "slash",
-    src: "/assets/hero/numbers/slash.webp",
-    group: "foreground",
-    x: 49.4,
-    y: 85.3,
-    width: 3.8,
-    z: 12,
-    animation: "none",
-    hideOnMobile: true,
-  },
-  {
-    id: "number-7",
-    src: "/assets/hero/numbers/number-7.webp",
-    group: "foreground",
-    x: 52.1,
-    y: 85.7,
-    width: 3.8,
-    z: 13,
-    animation: "none",
-    hideOnMobile: true,
-  },
-
-  /* --- Las mascotas se meten en la escena en vez de sentarse en las
-     esquinas: entran hacia el centro, se emparejan con la casa y con el
-     patinete, y van a distinta altura para que no lean como un espejo. */
-  {
-    id: "mascot-left",
-    src: "/assets/hero/characters/mascot-left.webp",
-    group: "foreground",
-    x: 8,
-    y: 73,
-    width: 11,
-    z: 14,
-    animation: "none",
-    hideOnMobile: true,
-  },
-  {
-    id: "mascot-right",
-    src: "/assets/hero/characters/mascot-right.webp",
-    group: "foreground",
-    x: 79,
-    y: 74,
-    width: 11,
-    z: 15,
+    x: 62,
+    y: 33,
+    width: 4,
+    opacity: 0.8,
+    z: 17,
     animation: "none",
     hideOnMobile: true,
   },

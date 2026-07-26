@@ -11,16 +11,11 @@ const SUAVE = [0.22, 1, 0.36, 1] as const;
 const ENTRADA_DUR = 0.4;
 
 /**
- * La escena se arma una sola vez, en segundos desde el load.
+ * Entrada de la escena, en segundos desde el load. Va entera detrás del
+ * contenido, que cierra en 0.64.
  *
- * Va entera por detrás del contenido: el titular abre en 0 y la
- * ilustración no empieza hasta 0.3, cuando el contenido ya está casi
- * puesto. Esa jerarquía es el guion. Con los 400ms de duración, lo
- * último —los destellos— cierra en 1s.
- *
- * Aquí sí se usa framer-motion: que la ilustración dependa de la
- * hidratación es aceptable, porque es decorativa. El contenido no puede
- * permitírselo y por eso entra con keyframes CSS (ver `globals.css`).
+ * Es la coreografía aprobada en su momento, no un bucle: la escena en
+ * reposo está completamente quieta.
  */
 const ENTRADA_SEG: Record<string, number> = {
   platform: 0.3,
@@ -35,20 +30,37 @@ const ENTRADA_SEG: Record<string, number> = {
   "mascot-right": 0.48,
   "cloud-left": 0.54,
   "cloud-right": 0.54,
+  "arrow-1": 0.54,
+  "arrow-2": 0.54,
+  "arrow-3": 0.54,
   "sparkle-1": 0.6,
   "sparkle-2": 0.6,
 };
 
+/* El resplandor es luz, no un bloque de color: amarillo de marca a muy
+   baja opacidad que se apaga antes del borde. Si se lee como un
+   rectángulo amarillo, está mal. Se construye con `color-mix` sobre el
+   token para no meter un hex suelto. Estático. */
+const RESPLANDOR =
+  "radial-gradient(ellipse 70% 70% at 50% 75%, color-mix(in srgb, var(--color-yellow-500) 14%, transparent) 0%, transparent 70%)";
+
+/* La elipse difusa que asienta la escena en un suelo. Sin ella, el
+   conjunto flota. */
+const SOMBRA_CONTACTO =
+  "radial-gradient(ellipse at center, color-mix(in srgb, var(--color-ink) 10%, transparent) 0%, transparent 70%)";
+
 /**
- * El escenario de la ilustración del hero.
+ * La escena ilustrada del hero.
  *
- * Recorre `escenaHero` y coloca cada asset en porcentajes sobre un
- * contenedor de aspect-ratio fijo, así que la escena entera escala
- * proporcionalmente y no hay posiciones por breakpoint.
+ * Vive **debajo** del contenido, en su propio contenedor, y no detrás de
+ * él: el titular, el input y los chips no tienen un solo asset encima.
  *
- * Va fuera de flujo y detrás del contenido a propósito: pase lo que
- * pase con la ilustración, el h1, el input, el CTA y los chips no se
- * mueven ni un píxel. Esa es la regla, no una consecuencia.
+ * La composición entera está en `lib/hero.config.ts`. Aquí solo se
+ * coloca: porcentajes sobre un contenedor de aspect-ratio fijo, así que
+ * la escena escala proporcionalmente sin posiciones por breakpoint.
+ *
+ * `overflow` visible a propósito: la plataforma sangra por debajo del
+ * borde inferior y el suelo se lee como si continuara fuera de cuadro.
  *
  * Toda la escena es decorativa: `aria-hidden` aquí y `alt=""` en cada
  * asset. No se describe.
@@ -57,25 +69,37 @@ export function HeroScene() {
   const reducido = useReducedMotion();
 
   return (
-    /* Los ceros van entre corchetes a propósito. `globals.css` anula la
-       escala dinámica con `--spacing: initial` para que `p-7` no exista,
-       y eso se lleva por delante las utilidades `-0`: Tailwind no llega
-       a generar `.inset-x-0` ni `.bottom-0`, así que la capa se queda sin
-       anclaje y colapsa a 0×0. Con valor arbitrario no pasa por la
-       escala. No lo cambies a `inset-x-0 bottom-0`. */
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-[0px] bottom-[0px] select-none"
+      /* En móvil el propio contenedor ya deja aire por arriba —solo
+         entra el núcleo, abajo—, así que el margen es menor. */
+      className="pointer-events-none mt-4 w-full select-none md:mt-24"
     >
-      <div className="relative mx-auto aspect-[16/9] w-full max-w-page">
+      {/* 4/3 en móvil, 16/9 desde md. El radio no recorta nada —el
+          overflow es visible y el fondo se apaga antes del borde—, pero
+          queda declarado por si algún día el contenedor gana superficie. */}
+      <div
+        style={{ backgroundImage: RESPLANDOR }}
+        className="relative mx-auto aspect-[4/3] w-full max-w-[900px] rounded-[20px] md:aspect-[16/9]"
+      >
+        {/* Sombra de contacto bajo el cojín. */}
+        <div
+          style={{ background: SOMBRA_CONTACTO, filter: "blur(14px)" }}
+          className="absolute top-[98%] left-[20%] h-[14%] w-[60%]"
+        />
+
         {escenaHero.map((asset) => {
-          /* `rotate` y `scale` van como propiedades de motion y no dentro
-             de un `transform` en `style`: framer compone el transform
-             entero y un string nuestro se lo pisaría. Al animar `y` todos
-             los envoltorios acaban con transform, así que todos crean
-             contexto de apilamiento y quien manda es el orden del array.
-             Por eso `z` sube con él. */
-          const giro = { rotate: asset.rotation ?? 0, scale: asset.scale ?? 1 };
+          /* `rotate`, `scale` y `opacity` van como propiedades de motion
+             y no dentro de un `transform` en `style`: framer compone el
+             transform entero y un string nuestro se lo pisaría. Al
+             animar `y` todos los envoltorios acaban con transform, así
+             que todos crean contexto de apilamiento y manda el orden del
+             array. Por eso `z` sube con él. */
+          const reposo = {
+            rotate: asset.rotation ?? 0,
+            scale: asset.scale ?? 1,
+            opacity: asset.opacity ?? 1,
+          };
 
           return (
             <motion.div
@@ -86,8 +110,8 @@ export function HeroScene() {
                 width: `${asset.width}%`,
                 transformOrigin: asset.origin ?? "center",
               }}
-              initial={{ opacity: 0, y: 12, ...giro }}
-              animate={{ opacity: 1, y: 0, ...giro }}
+              initial={{ ...reposo, opacity: 0, y: 12 }}
+              animate={{ ...reposo, y: 0 }}
               transition={
                 reducido
                   ? { duration: 0, delay: 0 }
@@ -103,8 +127,7 @@ export function HeroScene() {
                 src={asset.src}
                 z={asset.z}
                 priority={asset.priority}
-                /* El escenario mide `width`% de min(viewport, 1280px),
-                   así que por debajo de 1280 el ancho en vw coincide. */
+                /* El contenedor mide `width`% de min(ancho, 900px). */
                 sizes={`(max-width: ${ANCHO_ESCENARIO}px) ${asset.width}vw, ${Math.round(
                   (ANCHO_ESCENARIO * asset.width) / 100,
                 )}px`}

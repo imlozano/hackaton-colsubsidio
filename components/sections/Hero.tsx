@@ -177,9 +177,8 @@ export function Hero({ precarga = null }: Props) {
        sección: a 390px los assets asoman por los flancos y sin esto
        aparecería scroll horizontal. */
     <section className="relative mx-auto w-full max-w-page overflow-hidden px-5 py-16 md:px-10 md:py-32">
-      <HeroScene />
-
-      {/* El contenido va por encima de la ilustración, siempre. */}
+      {/* Dos zonas verticales. Arriba el contenido, sin un solo asset
+          detrás; abajo la escena, en su propio contenedor. */}
       <div className="relative z-10 mx-auto flex w-full max-w-hero flex-col items-center">
         {/* Titular. No se desmonta: la página siempre conserva su único
             <h1>, aunque tras enviar quede fuera de vista. */}
@@ -357,12 +356,11 @@ export function Hero({ precarga = null }: Props) {
           )}
         </AnimatePresence>
 
-        {/* Más aire en móvil, donde ya no hay ilustración debajo. En
-            desktop se queda en 64px: subirlo empujaría esta línea contra
-            la plataforma y se comería el aire de la escena. */}
+        {/* La escena ya no está detrás, así que el aire aquí es el mismo
+            en las dos anchuras. */}
         <p
           style={retraso(ENTRA.confianza)}
-          className="entrada-hero mt-24 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase md:mt-16"
+          className="entrada-hero mt-24 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase"
         >
           <span className="whitespace-nowrap">{hero.confianza.aliados}</span>
           {hero.confianza.sellos.map((sello) => (
@@ -372,6 +370,8 @@ export function Hero({ precarga = null }: Props) {
           ))}
         </p>
       </div>
+
+      <HeroScene />
     </section>
   );
 }
