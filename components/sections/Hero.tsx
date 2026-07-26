@@ -354,12 +354,19 @@ export function Hero({ precarga = null }: Props) {
           )}
         </AnimatePresence>
 
+        {/* Más aire en móvil, donde ya no hay ilustración debajo. En
+            desktop se queda en 64px: subirlo empujaría esta línea contra
+            la plataforma y se comería el aire de la escena. */}
         <p
           style={retraso(ENTRA.confianza)}
-          className="entrada-hero mt-16 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase"
+          className="entrada-hero mt-24 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase md:mt-16"
         >
-          <span>{hero.confianza.aliados}</span>
-          <span>{hero.confianza.sellos}</span>
+          <span className="whitespace-nowrap">{hero.confianza.aliados}</span>
+          {hero.confianza.sellos.map((sello) => (
+            <span key={sello} className="whitespace-nowrap">
+              {sello}
+            </span>
+          ))}
         </p>
       </div>
     </section>

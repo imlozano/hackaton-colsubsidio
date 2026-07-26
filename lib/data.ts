@@ -114,7 +114,11 @@ export const hero = {
 
   confianza: {
     aliados: "Bolívar · Chubb · BMI",
-    sellos: "Vigilado Supersubsidio · Vigilado Supersalud",
+    /** Uno por entrada, no una cadena con "·" dentro: a 390px la línea
+     *  partía por la mitad del segundo sello y se leía "VIGILADO
+     *  SUPERSUBSIDIO · VIGILADO / SUPERSALUD". Separados, cada sello
+     *  cae entero en su renglón. */
+    sellos: ["Vigilado Supersubsidio", "Vigilado Supersalud"],
   },
 } as const;
 

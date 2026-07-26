@@ -45,6 +45,13 @@ export const ANCHO_ESCENARIO = 1280;
  *
  * `group` y `animation` todavía no los lee nadie. Están para que la
  * etapa de animaciones no tenga que tocar esta estructura.
+ *
+ * **Toda la escena es de desktop.** A 390px el escenario mide 219px de
+ * alto: las mascotas quedaban en 43px y las cifras del 24/7 en 15px, y
+ * eso no se lee como ilustración sino como iconos sueltos pegados al
+ * borde. En móvil el hero se queda solo con el contenido, que es más
+ * limpio que una ilustración ilegible. Por eso los catorce llevan
+ * `hideOnMobile`.
  */
 export const escenaHero: HeroAssetConfig[] = [
   /* --- Fondo. Las nubes son lo más pequeño y lo más alto: es lo que
@@ -92,6 +99,7 @@ export const escenaHero: HeroAssetConfig[] = [
     z: 3,
     animation: "none",
     priority: true,
+    hideOnMobile: true,
   },
 
   /* --- Objetos. Entran hacia el centro en vez de pegarse al borde:
@@ -179,6 +187,7 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 3.8,
     z: 10,
     animation: "none",
+    hideOnMobile: true,
   },
   {
     id: "number-4",
@@ -189,6 +198,7 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 3.8,
     z: 11,
     animation: "none",
+    hideOnMobile: true,
   },
   {
     id: "slash",
@@ -199,6 +209,7 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 3.8,
     z: 12,
     animation: "none",
+    hideOnMobile: true,
   },
   {
     id: "number-7",
@@ -209,6 +220,7 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 3.8,
     z: 13,
     animation: "none",
+    hideOnMobile: true,
   },
 
   /* --- Las mascotas se meten en la escena en vez de sentarse en las
@@ -223,6 +235,7 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 11,
     z: 14,
     animation: "none",
+    hideOnMobile: true,
   },
   {
     id: "mascot-right",
@@ -233,5 +246,6 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 11,
     z: 15,
     animation: "none",
+    hideOnMobile: true,
   },
 ];
