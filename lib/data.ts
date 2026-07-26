@@ -111,19 +111,6 @@ export const hero = {
   },
 } as const;
 
-/* ---------------------------------------------------------------
-   Banda del tangram — brief §5
-   --------------------------------------------------------------- */
-
-export const tangram = {
-  // REVISAR — titular y línea de apoyo, no vienen de docs/
-  titulo: "Cada pieza protege algo distinto.",
-  // REVISAR
-  apoyo: "No necesitas todas. Solo las que sostienen tu vida.",
-  // REVISAR — texto alternativo de la ilustración
-  alt: "Siete piezas de tangram que se ensamblan formando un techo",
-} as const;
-
 /** Los seis pasos del recorrido. Ilustración de lo que hace el agente
  *  después de la entrega, no un indicador vivo. */
 export const pasos: Paso[] = [

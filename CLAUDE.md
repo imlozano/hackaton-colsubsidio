@@ -115,6 +115,6 @@ La prohibición sigue vigente para todo lo demás.
 
 1. Cimientos: proyecto, tokens `@theme`, fuentes, assets, nav y footer
 2. Hero con sus dos estados y la transición
-3. Secciones restantes de la home, incluida la banda del tangram
+3. Secciones restantes de la home
 4. Entrega al agente: `lib/intencion.ts`, reconocimiento y salida a `NEXT_PUBLIC_URL_PRODUCTO`
 5. Pulido: responsive 390px, accesibilidad, deploy

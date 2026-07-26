@@ -30,10 +30,9 @@ Si el jurado abre el link y ve una landing bonita con un botón que no lleva a n
 | 2 | **Hero** | El elemento firma. Ver §4 |
 | 3 | Banda de confianza | Aseguradoras aliadas + los dos sellos de vigilancia |
 | 4 | Qué puedes proteger | 6 categorías, precargan el hero con contexto |
-| 5 | **Banda del tangram** | Animación de ensamblaje. Ver §5 |
-| 6 | Cómo funciona | Bloque amarillo, 3 pasos reales + la barra ilustrada de 6 pasos |
-| 7 | FAQ | 5 preguntas, acordeón |
-| 8 | Footer | Legales, contacto, disclaimer de prototipo |
+| 5 | Cómo funciona | Bloque amarillo, 3 pasos reales + la barra ilustrada de 6 pasos |
+| 6 | FAQ | 5 preguntas, acordeón |
+| 7 | Footer | Legales, contacto, disclaimer de prototipo |
 
 ### No va
 Blog, testimonios, contadores de estadísticas, carrusel, dark mode, login real, multi-idioma, "quiénes somos". Y nada que simule al agente: conversación por turnos, precios, coberturas, formularios de datos, pago o póliza.
@@ -175,17 +174,6 @@ Al hacer clic **no navegan**: hacen scroll al hero y precargan la frase con ese 
 
 Vida y familia · Exequial · Movilidad · Hogar · Mascotas · Viajes
 
-### Banda del tangram
-Banda propia entre "Qué puedes proteger" y "Cómo funciona". `components/sections/Tangram.tsx`, SVG inline, sin assets externos y sin librerías nuevas — framer-motion, que ya está instalado.
-
-- **Siete piezas de tangram clásico:** cinco triángulos (dos grandes, uno mediano, dos pequeños), un cuadrado y un romboide. Seis en escala de azules (`blue-500` a `blue-800`), **una en `yellow-500`**. Formas planas: sin sombras, sin degradados, sin 3D.
-- **Estado inicial:** dispersas, rotadas, opacidad 0.
-- **Al entrar en viewport** con `whileInView`, se ensamblan formando la silueta de un techo. Stagger de 80ms, 600ms por pieza, `cubic-bezier(0.22,1,0.36,1)`. **Una sola vez, no en loop.**
-- `whileInView`, **nunca scroll-scrubbing**: en móvil es frágil y no hay tiempo de depurarlo.
-- Al lado, alineado a la izquierda: un titular corto terminado en punto y una línea de apoyo.
-- `prefers-reduced-motion`: renderiza el techo ya ensamblado, sin animación.
-- **La pieza amarilla es el único amarillo de ese viewport.**
-
 ### Cómo funciona
 **Bloque amarillo a sangre completa**, texto en tinta `#0A0A0A`. Es el único momento de amarillo grande de la página y por eso funciona.
 
@@ -253,7 +241,7 @@ Estructura:
 
 ```
 /app        layout.tsx · page.tsx · globals.css (@theme con todos los tokens)
-/components /sections  Nav Hero Tangram ComoFunciona Coberturas Faq Footer
+/components /sections  Nav Hero Proteger ComoFunciona Faq Footer
             /ui        Button Card Eyebrow Accordion ProgressBar
 /lib        types.ts · data.ts · intencion.ts
 /public     /brand  logos y sellos
@@ -295,5 +283,4 @@ Si la clasificación por palabras clave se queda corta, se amplía la tabla. **N
 - [ ] En ningún lado dice "Superintendencia Financiera"
 - [ ] Los dos sellos de vigilancia están en el footer
 - [ ] El disclaimer de prototipo está en el footer
-- [ ] La banda del tangram se ensambla una sola vez y no hace scroll-scrubbing
 - [ ] Tienes video de respaldo por si falla el internet

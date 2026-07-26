@@ -58,17 +58,3 @@ export type Coincidencia = {
   /** Cómo se nombra en el reconocimiento: "tu moto", "a tu bebé". */
   sujeto: string;
 };
-
-/* ---------------------------------------------------------------
-   Banda del tangram
-   --------------------------------------------------------------- */
-
-export type PiezaTangram = {
-  nombre: string;
-  /** Vértices en el espacio del tangram, antes de proyectar. */
-  puntos: [number, number][];
-  /** Utilidad de Tailwind: el color sale del token, nunca de un hex. */
-  relleno: string;
-  /** De dónde entra la pieza: desplazamiento y giro iniciales. */
-  desde: { x: number; y: number; giro: number };
-};
