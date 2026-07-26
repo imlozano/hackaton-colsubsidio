@@ -150,6 +150,16 @@ Las primas del prototipo son estimadas y así deben rotularse. No se presentan c
 
 **La barra de 6 pasos ya no vive aquí.** En el hero prometía un flujo que no operamos; pasó a ser ilustración estática dentro de "Cómo funciona".
 
+### La ilustración del hero — excepción acotada
+
+El hero incorpora una ilustración decorativa compuesta por assets ilustrados generados para este prototipo. Es **la única excepción** a la prohibición de ilustraciones, personajes y assets generados que fija `CLAUDE.md`.
+
+- **Alcance estricto:** `components/hero/` y `public/assets/hero/`. Fuera de ahí la prohibición sigue vigente.
+- Estos assets **no son identidad de marca de Colsubsidio** y no se presentan como tales. No sustituyen ni compiten con `/public/brand`.
+- El resto de la interfaz sigue usando exclusivamente el sistema de diseño oficial. La paleta del proyecto no cambia.
+- La ilustración es **decorativa**: `aria-hidden` en la escena y `alt=""` en cada asset. No se describe, no aporta información.
+- **El contenido manda.** A 390×844 se ven sin scrollear H1, input, CTA y al menos dos chips. Si la ilustración invade ese espacio, se reduce la ilustración: el contenido no se desplaza.
+
 ---
 
 ## 5. Las demás secciones

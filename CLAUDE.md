@@ -89,6 +89,20 @@ pnpm dlx <herramienta>       # en vez de npx
 - Simular el asesor, cotizar, cobrar o emitir pólizas. Eso es del agente de voz
 - Secciones fuera del alcance del brief
 
+### EXCEPCIÓN — Ilustración del hero
+
+La sección hero incorpora una ilustración decorativa compuesta por assets
+ilustrados generados para este prototipo. Es la única excepción a la
+prohibición de ilustraciones, personajes y assets generados.
+
+Alcance estricto: `components/hero/` y `public/assets/hero/`.
+
+Estos assets **NO son identidad de marca de Colsubsidio** y no deben
+presentarse como tales. El resto de la interfaz sigue usando exclusivamente
+el sistema de diseño oficial.
+
+La prohibición sigue vigente para todo lo demás.
+
 ## Cómo trabajamos
 
 - **Planifica antes de codificar.** Cuando te pida una etapa, devuelve primero el plan y espera mi aprobación explícita. No escribas archivos hasta que apruebe.
