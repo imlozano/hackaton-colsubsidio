@@ -33,7 +33,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      {/* Las extensiones del navegador inyectan atributos en el <body>
+          antes de que React hidrate —cz-shortcut-listen, de ColorZilla,
+          es el caso conocido aquí— y eso dispara un aviso de hidratación
+          que no viene de este código y que el usuario no puede arreglar.
+          El silencio se limita al <body>: cualquier desajuste real dentro
+          de la app sigue avisando. */}
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col`}
       >
         <Nav />
