@@ -14,6 +14,8 @@
 export type HeroAssetConfig = {
   id: string;
   src: string;
+  /** El plano al que pertenece. `foreground` es el cluster que levita
+   *  —cojín, cifras y mascotas—; `background` se queda quieto. */
   group: "background" | "foreground";
   /** Borde izquierdo, en % del ancho del contenedor. */
   x: number;
@@ -50,7 +52,8 @@ export const ANCHO_ESCENARIO = 900;
  * mismas reglas de apoyo y oclusión. Todo lo demás lleva `hideOnMobile`.
  */
 export const escenaHero: HeroAssetConfig[] = [
-  /* z1 — Nubes. Esquinas de arriba, atenuadas, tocando la fila. */
+  /* Fondo quieto: nubes, flechas encadenando casa → portátil →
+     patinete, y los destellos que cosen los huecos. */
   {
     id: "cloud-left",
     src: "/assets/hero/effects/cloud-left.webp",
@@ -77,9 +80,6 @@ export const escenaHero: HeroAssetConfig[] = [
     animation: "none",
     hideOnMobile: true,
   },
-
-  /* z2 — Flechas. Tres copias giradas que encadenan casa → portátil →
-     patinete y bajan al núcleo. Van al fondo, detrás de los objetos. */
   {
     id: "arrow-1",
     src: "/assets/hero/effects/arrow.webp",
@@ -119,9 +119,6 @@ export const escenaHero: HeroAssetConfig[] = [
     animation: "none",
     hideOnMobile: true,
   },
-
-  /* z3 — Fila de fondo. Escala y opacidad por debajo del primer plano:
-     es lo que la manda hacia atrás sin recurrir a ningún desenfoque. */
   {
     id: "house",
     src: "/assets/hero/objects/house.webp",
@@ -161,89 +158,6 @@ export const escenaHero: HeroAssetConfig[] = [
     animation: "none",
     hideOnMobile: true,
   },
-
-  /* z4 — La plataforma. Centrada, apoyada abajo y sangrando por debajo
-     del borde: el suelo continúa fuera de cuadro. */
-  {
-    id: "platform",
-    src: "/assets/hero/objects/platform.webp",
-    group: "background",
-    x: 26,
-    y: 62.6,
-    width: 48,
-    z: 9,
-    animation: "none",
-  },
-
-  /* z5 — El 24/7, apoyado sobre el cojín. La base de cada cifra se mete
-     dentro de la superficie; ninguna queda al aire. Sin `rotation`: con
-     transform el z queda encerrado en el envoltorio. */
-  {
-    id: "number-2",
-    src: "/assets/hero/numbers/number-2.webp",
-    group: "foreground",
-    x: 32.2,
-    y: 58.1,
-    width: 11,
-    z: 10,
-    animation: "none",
-  },
-  {
-    id: "number-4",
-    src: "/assets/hero/numbers/number-4.webp",
-    group: "foreground",
-    x: 40.2,
-    y: 58.1,
-    width: 11,
-    z: 11,
-    animation: "none",
-  },
-  {
-    id: "slash",
-    src: "/assets/hero/numbers/slash.webp",
-    group: "foreground",
-    x: 48.2,
-    y: 58.1,
-    width: 11,
-    z: 12,
-    animation: "none",
-  },
-  {
-    id: "number-7",
-    src: "/assets/hero/numbers/number-7.webp",
-    group: "foreground",
-    x: 56.2,
-    y: 58.1,
-    width: 11,
-    z: 13,
-    animation: "none",
-  },
-
-  /* z6 — Las mascotas se sientan encima del 2 y del 7 y tapan parte de
-     su borde superior. Esa oclusión es lo que da la profundidad: si no
-     se solapan, la escena se deshace en piezas sueltas. */
-  {
-    id: "mascot-left",
-    src: "/assets/hero/characters/mascot-left.webp",
-    group: "foreground",
-    x: 31,
-    y: 43.5,
-    width: 14,
-    z: 14,
-    animation: "none",
-  },
-  {
-    id: "mascot-right",
-    src: "/assets/hero/characters/mascot-right.webp",
-    group: "foreground",
-    x: 55,
-    y: 43.5,
-    width: 14,
-    z: 15,
-    animation: "none",
-  },
-
-  /* z7 — Destellos en los huecos que quedan entre las flechas. */
   {
     id: "sparkle-1",
     src: "/assets/hero/effects/sparkle-1.webp",
@@ -252,7 +166,7 @@ export const escenaHero: HeroAssetConfig[] = [
     y: 32.3,
     width: 4,
     opacity: 0.8,
-    z: 16,
+    z: 9,
     animation: "none",
     hideOnMobile: true,
   },
@@ -264,8 +178,82 @@ export const escenaHero: HeroAssetConfig[] = [
     y: 26.7,
     width: 4,
     opacity: 0.8,
-    z: 17,
+    z: 10,
     animation: "none",
     hideOnMobile: true,
+  },
+
+  /* Cluster que levita: el cojín y todo lo que se apoya en él. Va
+     agrupado bajo un único contenedor animado, así que el orden de
+     aquí solo decide el apilamiento interno. */
+  {
+    id: "platform",
+    src: "/assets/hero/objects/platform.webp",
+    group: "foreground",
+    x: 26,
+    y: 62.6,
+    width: 48,
+    z: 11,
+    animation: "none",
+  },
+  {
+    id: "number-2",
+    src: "/assets/hero/numbers/number-2.webp",
+    group: "foreground",
+    x: 32.2,
+    y: 58.1,
+    width: 11,
+    z: 12,
+    animation: "none",
+  },
+  {
+    id: "number-4",
+    src: "/assets/hero/numbers/number-4.webp",
+    group: "foreground",
+    x: 40.2,
+    y: 58.1,
+    width: 11,
+    z: 13,
+    animation: "none",
+  },
+  {
+    id: "slash",
+    src: "/assets/hero/numbers/slash.webp",
+    group: "foreground",
+    x: 48.2,
+    y: 58.1,
+    width: 11,
+    z: 14,
+    animation: "none",
+  },
+  {
+    id: "number-7",
+    src: "/assets/hero/numbers/number-7.webp",
+    group: "foreground",
+    x: 56.2,
+    y: 58.1,
+    width: 11,
+    z: 15,
+    animation: "none",
+  },
+  {
+    id: "mascot-left",
+    src: "/assets/hero/characters/mascot-left.webp",
+    group: "foreground",
+    x: 31,
+    y: 43.5,
+    width: 14,
+    z: 16,
+    animation: "none",
+  },
+  {
+    id: "mascot-right",
+    src: "/assets/hero/characters/mascot-right.webp",
+    group: "foreground",
+    x: 55,
+    y: 43.5,
+    width: 14,
+    z: 17,
+    animation: "none",
   },
 ];

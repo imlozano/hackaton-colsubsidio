@@ -1,6 +1,13 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
+import { useEffect } from "react";
 
 import { ANCHO_ESCENARIO, escenaHero } from "@/lib/hero.config";
 
@@ -52,8 +59,12 @@ const SOMBRA_CONTACTO =
 /**
  * La escena ilustrada del hero.
  *
- * Vive **debajo** del contenido, en su propio contenedor, y no detrás de
- * él: el titular, el input y los chips no tienen un solo asset encima.
+ * Abre el hero, **encima** del titular y en su propio contenedor, nunca
+ * detrás: el H1, el input y los chips no tienen un solo asset debajo.
+ *
+ * Dos planos. El de fondo —nubes, flechas, casa, portátil, patinete y
+ * destellos— está quieto. El cluster —cojín, cifras y mascotas— levita
+ * como una sola pieza, y la sombra le responde al revés.
  *
  * La composición entera está en `lib/hero.config.ts`. Aquí solo se
  * coloca: porcentajes sobre un contenedor de aspect-ratio fijo, así que
@@ -67,6 +78,39 @@ const SOMBRA_CONTACTO =
  */
 export function HeroScene() {
   const reducido = useReducedMotion();
+
+  /* Un único valor gobierna la levitación: 0 abajo, 1 arriba. De él
+     cuelgan el desplazamiento del cluster y la respuesta de la sombra,
+     así que en toda la página hay **un solo bucle infinito**, no uno
+     por elemento.
+
+     El apagado va aquí, en JavaScript, y no en el bloque global de
+     `prefers-reduced-motion` de `globals.css`: ese bloque anula
+     `animation-duration`, que solo alcanza a los keyframes CSS. Esto es
+     un bucle de framer sobre requestAnimationFrame y seguiría corriendo
+     tan tranquilo. Es el mismo agujero que ya apareció con el retraso
+     de la entrada y con el estado `espera` de las secciones. */
+  const flote = useMotionValue(0);
+
+  useEffect(() => {
+    if (reducido) return;
+    const control = animate(flote, [0, 1, 0], {
+      duration: 6,
+      ease: "easeInOut",
+      repeat: Infinity,
+    });
+    return () => control.stop();
+  }, [flote, reducido]);
+
+  const yCluster = useTransform(flote, [0, 1], [0, -8]);
+  /* La sombra responde al revés: cuando el cluster sube, se encoge y se
+     aclara. Ese contrapunto es lo que se lee como levitación; sin él,
+     el mismo movimiento parece una vibración. */
+  const anchoSombra = useTransform(flote, [0, 1], [1, 0.85]);
+  const opacidadSombra = useTransform(flote, [0, 1], [1, 0.6]);
+
+  const fondo = escenaHero.filter((a) => a.group === "background");
+  const cluster = escenaHero.filter((a) => a.group === "foreground");
 
   return (
     <div
@@ -86,60 +130,77 @@ export function HeroScene() {
         style={{ backgroundImage: RESPLANDOR }}
         className="relative mx-auto aspect-[2/1] w-full max-w-[900px] rounded-[20px]"
       >
-        {/* Sombra de contacto bajo el cojín. */}
-        <div
-          style={{ background: SOMBRA_CONTACTO, filter: "blur(14px)" }}
+        {/* Sombra de contacto. Se encoge y se aclara cuando el cluster
+            sube, y vuelve a 1 cuando baja. Va fuera del contenedor que
+            levita: si flotara con él, no habría contrapunto. */}
+        <motion.div
+          style={{
+            background: SOMBRA_CONTACTO,
+            filter: "blur(14px)",
+            scaleX: anchoSombra,
+            opacity: opacidadSombra,
+          }}
           className="absolute top-[100%] left-[20%] h-[16%] w-[60%]"
         />
 
-        {escenaHero.map((asset) => {
-          /* `rotate`, `scale` y `opacity` van como propiedades de motion
-             y no dentro de un `transform` en `style`: framer compone el
-             transform entero y un string nuestro se lo pisaría. Al
-             animar `y` todos los envoltorios acaban con transform, así
-             que todos crean contexto de apilamiento y manda el orden del
-             array. Por eso `z` sube con él. */
-          const reposo = {
-            rotate: asset.rotation ?? 0,
-            scale: asset.scale ?? 1,
-            opacity: asset.opacity ?? 1,
-          };
+        {/* Plano de fondo: no se mueve. Moverlo con el cluster aplanaría
+            la profundidad que da tenerlo más pequeño y más atenuado. */}
+        {fondo.map(pintar)}
 
-          return (
-            <motion.div
-              key={asset.id}
-              style={{
-                left: `${asset.x}%`,
-                top: `${asset.y}%`,
-                width: `${asset.width}%`,
-                transformOrigin: asset.origin ?? "center",
-              }}
-              initial={{ ...reposo, opacity: 0, y: 12 }}
-              animate={{ ...reposo, y: 0 }}
-              transition={
-                reducido
-                  ? { duration: 0, delay: 0 }
-                  : {
-                      duration: ENTRADA_DUR,
-                      delay: ENTRADA_SEG[asset.id] ?? 0,
-                      ease: SUAVE,
-                    }
-              }
-              className={`absolute ${asset.hideOnMobile ? "hidden md:block" : ""}`}
-            >
-              <HeroAsset
-                src={asset.src}
-                z={asset.z}
-                priority={asset.priority}
-                /* El contenedor mide `width`% de min(ancho, 900px). */
-                sizes={`(max-width: ${ANCHO_ESCENARIO}px) ${asset.width}vw, ${Math.round(
-                  (ANCHO_ESCENARIO * asset.width) / 100,
-                )}px`}
-              />
-            </motion.div>
-          );
-        })}
+        {/* El cluster entero cuelga de un solo contenedor animado. Un
+            `y` por asset serían once bucles y once oportunidades de que
+            se desincronicen. */}
+        <motion.div style={{ y: yCluster }} className="absolute inset-[0px]">
+          {cluster.map(pintar)}
+        </motion.div>
       </div>
     </div>
   );
+
+  function pintar(asset: (typeof escenaHero)[number]) {
+    /* `rotate`, `scale` y `opacity` van como propiedades de motion y no
+       dentro de un `transform` en `style`: framer compone el transform
+       entero y un string nuestro se lo pisaría. Al animar `y` todos los
+       envoltorios acaban con transform, así que todos crean contexto de
+       apilamiento y manda el orden del array. Por eso `z` sube con él. */
+    const reposo = {
+      rotate: asset.rotation ?? 0,
+      scale: asset.scale ?? 1,
+      opacity: asset.opacity ?? 1,
+    };
+
+    return (
+      <motion.div
+        key={asset.id}
+        style={{
+          left: `${asset.x}%`,
+          top: `${asset.y}%`,
+          width: `${asset.width}%`,
+          transformOrigin: asset.origin ?? "center",
+        }}
+        initial={{ ...reposo, opacity: 0, y: 12 }}
+        animate={{ ...reposo, y: 0 }}
+        transition={
+          reducido
+            ? { duration: 0, delay: 0 }
+            : {
+                duration: ENTRADA_DUR,
+                delay: ENTRADA_SEG[asset.id] ?? 0,
+                ease: SUAVE,
+              }
+        }
+        className={`absolute ${asset.hideOnMobile ? "hidden md:block" : ""}`}
+      >
+        <HeroAsset
+          src={asset.src}
+          z={asset.z}
+          priority={asset.priority}
+          /* El contenedor mide `width`% de min(ancho, 900px). */
+          sizes={`(max-width: ${ANCHO_ESCENARIO}px) ${asset.width}vw, ${Math.round(
+            (ANCHO_ESCENARIO * asset.width) / 100,
+          )}px`}
+        />
+      </motion.div>
+    );
+  }
 }
