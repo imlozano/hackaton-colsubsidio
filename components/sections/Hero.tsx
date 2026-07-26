@@ -177,8 +177,10 @@ export function Hero({ precarga = null }: Props) {
        sección: a 390px los assets asoman por los flancos y sin esto
        aparecería scroll horizontal. */
     <section className="relative mx-auto w-full max-w-page overflow-hidden px-5 py-16 md:px-10 md:py-32">
-      {/* Dos zonas verticales. Arriba el contenido, sin un solo asset
-          detrás; abajo la escena, en su propio contenedor. */}
+      {/* Dos zonas verticales. Arriba la escena, en su propio
+          contenedor; debajo el contenido, sin un solo asset detrás. */}
+      <HeroScene />
+
       <div className="relative z-10 mx-auto flex w-full max-w-hero flex-col items-center">
         {/* Titular. No se desmonta: la página siempre conserva su único
             <h1>, aunque tras enviar quede fuera de vista. */}
@@ -370,8 +372,6 @@ export function Hero({ precarga = null }: Props) {
           ))}
         </p>
       </div>
-
-      <HeroScene />
     </section>
   );
 }

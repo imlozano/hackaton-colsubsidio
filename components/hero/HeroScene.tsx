@@ -71,21 +71,25 @@ export function HeroScene() {
   return (
     <div
       aria-hidden="true"
-      /* En móvil el propio contenedor ya deja aire por arriba —solo
-         entra el núcleo, abajo—, así que el margen es menor. */
-      className="pointer-events-none mt-4 w-full select-none md:mt-24"
+      /* La escena abre el hero, así que el aire va debajo. Tiene que
+         superar el sangrado del cojín para que no toque el titular. */
+      className="pointer-events-none mb-16 w-full select-none"
     >
-      {/* 4/3 en móvil, 16/9 desde md. El radio no recorta nada —el
-          overflow es visible y el fondo se apaga antes del borde—, pero
-          queda declarado por si algún día el contenedor gana superficie. */}
+      {/* Una sola proporción en las dos anchuras, y no dos: con
+          aspect-ratios distintos el mismo `y` cae en sitios distintos y
+          las relaciones verticales se deshacían —en móvil las mascotas
+          dejaban de solapar las cifras—. El contenedor está recortado
+          por arriba para que la escena arranque cerca del borde en vez
+          de dejar un vacío. El radio no recorta nada: el overflow es
+          visible y el fondo se apaga antes del borde. */}
       <div
         style={{ backgroundImage: RESPLANDOR }}
-        className="relative mx-auto aspect-[4/3] w-full max-w-[900px] rounded-[20px] md:aspect-[16/9]"
+        className="relative mx-auto aspect-[2/1] w-full max-w-[900px] rounded-[20px]"
       >
         {/* Sombra de contacto bajo el cojín. */}
         <div
           style={{ background: SOMBRA_CONTACTO, filter: "blur(14px)" }}
-          className="absolute top-[98%] left-[20%] h-[14%] w-[60%]"
+          className="absolute top-[100%] left-[20%] h-[16%] w-[60%]"
         />
 
         {escenaHero.map((asset) => {
