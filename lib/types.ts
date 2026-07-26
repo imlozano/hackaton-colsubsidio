@@ -58,3 +58,35 @@ export type Coincidencia = {
   /** Cómo se nombra en el reconocimiento: "tu moto", "a tu bebé". */
   sujeto: string;
 };
+
+/* ---------------------------------------------------------------
+   Qué puedes proteger — brief §5
+   --------------------------------------------------------------- */
+
+export type TarjetaProteger = {
+  categoria: CategoriaId;
+  nombre: string;
+  frase: string;
+  /** Se escribe en el input del hero al elegir la tarjeta. Tiene que
+   *  contener una palabra de `lib/intencion.ts` que caiga en esta misma
+   *  categoría, o el reconocimiento diría otra cosa. */
+  precarga: string;
+};
+
+/* ---------------------------------------------------------------
+   Cómo funciona — brief §5
+   --------------------------------------------------------------- */
+
+export type PasoComoFunciona = {
+  titulo: string;
+  detalle: string;
+};
+
+/* ---------------------------------------------------------------
+   FAQ — brief §5
+   --------------------------------------------------------------- */
+
+export type PreguntaFaq = {
+  pregunta: string;
+  respuesta: string;
+};

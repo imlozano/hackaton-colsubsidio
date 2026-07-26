@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { HeroScene } from "@/components/hero/HeroScene";
 import { Button } from "@/components/ui/Button";
@@ -77,12 +77,48 @@ function destino(frase: string, coincidencia: Coincidencia | null) {
   }
 }
 
-export function Hero() {
+/** Lo que manda "Qué puedes proteger" al elegir una tarjeta. El
+ *  contador existe para que elegir dos veces la misma tarjeta vuelva a
+ *  disparar el efecto: con solo el texto, React vería el mismo valor. */
+export type Precarga = { frase: string; n: number };
+
+type Props = {
+  precarga?: Precarga | null;
+};
+
+export function Hero({ precarga = null }: Props) {
   const reducido = useReducedMotion();
 
   const [valor, setValor] = useState("");
   const [enviado, setEnviado] = useState<string | null>(null);
   const [enfocado, setEnfocado] = useState(false);
+
+  const entradaRef = useRef<HTMLInputElement>(null);
+  const pedirFoco = useRef(false);
+
+  /* Las tarjetas escriben aquí, no envían: el usuario sigue mandando
+     sobre la frase antes de entregarla al agente. */
+  useEffect(() => {
+    if (!precarga) return;
+    setEnviado(null);
+    setValor(precarga.frase);
+    pedirFoco.current = true;
+  }, [precarga]);
+
+  /* El foco va en un efecto aparte porque `setEnviado(null)` puede tener
+     que volver a montar el input: en el efecto de arriba la ref todavía
+     apunta a null. Sin lista de dependencias, pero sale enseguida. */
+  useEffect(() => {
+    if (!pedirFoco.current) return;
+    const entrada = entradaRef.current;
+    if (!entrada) return;
+    pedirFoco.current = false;
+    entrada.scrollIntoView({
+      behavior: reducido ? "auto" : "smooth",
+      block: "center",
+    });
+    entrada.focus({ preventScroll: true });
+  });
 
   /* Se detiene al hacer foco, si ya hay texto escrito, después de enviar,
      y siempre que el usuario pidió menos movimiento. */
@@ -218,6 +254,7 @@ export function Hero() {
               <div className="relative">
                 <input
                   id="entrada-hero"
+                  ref={entradaRef}
                   type="text"
                   autoComplete="off"
                   value={valor}

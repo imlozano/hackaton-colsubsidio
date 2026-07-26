@@ -1,0 +1,86 @@
+"use client";
+
+import { Bike, Flower2, House, PawPrint, Plane, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import { proteger } from "@/lib/data";
+import type { CategoriaId } from "@/lib/types";
+
+/* El icono no es copy, así que no vive en data.ts: allí queda la
+   categoría y aquí se resuelve el dibujo. */
+const ICONOS: Record<CategoriaId, LucideIcon> = {
+  "vida-familia": Users,
+  exequial: Flower2,
+  movilidad: Bike,
+  hogar: House,
+  mascotas: PawPrint,
+  viajes: Plane,
+};
+
+type Props = {
+  /** Escribe la frase en el input del hero. No navega a ninguna ruta. */
+  onElegir: (frase: string) => void;
+};
+
+/**
+ * Qué puedes proteger — brief §5.
+ *
+ * Seis tarjetas que **no navegan**: escriben en el hero y suben el foco
+ * hasta él. Una sola entrada en toda la página, siempre la misma.
+ *
+ * Sin precios y sin coberturas: aquí solo se dice para quién es cada
+ * categoría. Lo que cubre y lo que cuesta es del asesor.
+ *
+ * Aquí vive el ancla `#proteger` a la que apuntan el nav y el footer.
+ */
+export function Proteger({ onElegir }: Props) {
+  return (
+    <section
+      id="proteger"
+      aria-labelledby="proteger-titulo"
+      className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32"
+    >
+      <h2
+        id="proteger-titulo"
+        className="text-titulo text-balance md:text-titulo-lg"
+      >
+        {proteger.titulo}
+      </h2>
+      <p className="mt-4 max-w-prosa text-cuerpo text-ink-soft md:text-cuerpo-lg">
+        {proteger.apoyo}
+      </p>
+
+      <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {proteger.tarjetas.map((tarjeta) => {
+          const Icono = ICONOS[tarjeta.categoria];
+
+          return (
+            <li key={tarjeta.categoria}>
+              {/* Blanca sobre lienzo y con borde, pero sin sombra: las
+                  tres cosas a la vez están prohibidas. */}
+              <button
+                type="button"
+                onClick={() => onElegir(tarjeta.precarga)}
+                className="flex h-full w-full flex-col items-start rounded-lg border border-line bg-surface p-6 text-left transition-colors duration-150 hover:border-blue-300"
+              >
+                <Icono
+                  aria-hidden="true"
+                  strokeWidth={1.5}
+                  className="size-6 text-blue-500"
+                />
+                {/* font-semibold iguala el peso del h2: con el 500 que
+                    trae el token serían tres pesos en la sección. */}
+                <h3 className="mt-4 text-subtitulo font-semibold md:text-subtitulo-lg">
+                  {tarjeta.nombre}
+                </h3>
+                <p className="mt-2 text-cuerpo text-ink-soft">
+                  {tarjeta.frase}
+                </p>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}

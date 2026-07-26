@@ -1,4 +1,11 @@
-import type { ColumnaFooter, EnlaceNav, Paso } from "./types";
+import type {
+  ColumnaFooter,
+  EnlaceNav,
+  Paso,
+  PasoComoFunciona,
+  PreguntaFaq,
+  TarjetaProteger,
+} from "./types";
 
 /**
  * Todo el copy del prototipo vive aquí. Nada de texto hardcodeado en JSX.
@@ -109,6 +116,142 @@ export const hero = {
     aliados: "Bolívar · Chubb · BMI",
     sellos: "Vigilado Supersubsidio · Vigilado Supersalud",
   },
+} as const;
+
+/* ---------------------------------------------------------------
+   Qué puedes proteger — brief §5
+   --------------------------------------------------------------- */
+
+export const proteger = {
+  // REVISAR — titular de sección, no viene de docs/
+  titulo: "Qué puedes proteger.",
+  /** Explica que las tarjetas no navegan: una sola entrada, siempre. */
+  // REVISAR
+  apoyo:
+    "Toca la que te suene. Te llevamos arriba con la frase ya escrita y desde ahí la cambias si quieres.",
+
+  /** Sin precios y sin coberturas: aquí solo se dice para quién es cada
+   *  una. Lo que cubre y lo que cuesta lo resuelve el asesor. */
+  tarjetas: [
+    {
+      categoria: "vida-familia",
+      nombre: "Vida y familia",
+      // REVISAR
+      frase: "Para que, si algo te pasa, los tuyos no queden a la deriva.",
+      precarga: "Quiero proteger a mi familia",
+    },
+    {
+      categoria: "exequial",
+      nombre: "Exequial",
+      // REVISAR
+      frase: "Para que el momento más difícil no llegue además con cuentas.",
+      precarga: "Quiero un plan exequial para mis papás",
+    },
+    {
+      categoria: "movilidad",
+      nombre: "Movilidad",
+      // REVISAR
+      frase: "Para lo que te mueve a diario: moto, carro, bici o patineta.",
+      precarga: "Me muevo en moto todos los días",
+    },
+    {
+      categoria: "hogar",
+      nombre: "Hogar",
+      // REVISAR
+      frase: "Para el lugar al que vuelves, sea propio o arrendado.",
+      precarga: "Vivo en un apartamento arrendado",
+    },
+    {
+      categoria: "mascotas",
+      nombre: "Mascotas",
+      // REVISAR
+      frase: "Para que llevarlo al veterinario no sea una decisión de plata.",
+      precarga: "Tengo un perro y quiero cuidarlo",
+    },
+    {
+      categoria: "viajes",
+      nombre: "Viajes",
+      // REVISAR
+      frase: "Para salir del país sin dejar nada al azar.",
+      precarga: "Salgo de viaje pronto",
+    },
+  ] satisfies TarjetaProteger[],
+} as const;
+
+/* ---------------------------------------------------------------
+   Cómo funciona — brief §5
+   --------------------------------------------------------------- */
+
+export const comoFunciona = {
+  // REVISAR — titular de sección, no viene de docs/
+  titulo: "Cómo funciona.",
+
+  /** El sujeto es explícito a propósito. Esta landing no cotiza, no
+   *  cobra y no emite pólizas: quien lo hace es el asesor, y el copy
+   *  tiene que decirlo o promete algo que la página no cumple. */
+  pasos: [
+    {
+      titulo: "Cuéntanos tu situación.",
+      detalle:
+        "En tus palabras. No necesitas conocer términos de seguros.",
+    },
+    {
+      titulo: "Tu asesor te muestra lo que te sirve.",
+      detalle:
+        "Llega sabiendo qué quieres proteger, y te explica por qué te lo recomienda.",
+    },
+    {
+      titulo: "Quedas asegurado.",
+      detalle: "Él resuelve la cotización, el pago y tu póliza.",
+    },
+  ] satisfies PasoComoFunciona[],
+
+  // REVISAR — encabezado de la barra ilustrada
+  recorrido: "Lo que pasa después de la entrega",
+} as const;
+
+/* ---------------------------------------------------------------
+   FAQ — brief §5
+   --------------------------------------------------------------- */
+
+export const faq = {
+  // REVISAR — titular de sección, no viene de docs/
+  titulo: "Preguntas que siempre nos hacen.",
+
+  /** Las cinco preguntas salen del brief §5. Las respuestas las escribí
+   *  yo en voz de marca: hay que auditarlas antes de publicar, sobre
+   *  todo las que afirman algo contractual. */
+  preguntas: [
+    {
+      pregunta: "¿Necesito ser afiliado a Colsubsidio?",
+      // REVISAR — afirma condiciones de contratación
+      respuesta:
+        "No. Estos seguros están abiertos a cualquiera. Si además eres afiliado, díselo a tu asesor cuando hables con él.",
+    },
+    {
+      pregunta: "¿Quién responde si tengo un siniestro?",
+      // REVISAR — afirma quién asume el amparo
+      respuesta:
+        "La aseguradora que emitió tu póliza: Bolívar, Chubb o BMI, según el producto. Colsubsidio te acompaña, pero el nombre de quien responde está escrito en tu póliza.",
+    },
+    {
+      pregunta: "¿Puedo cancelar cuando quiera?",
+      // REVISAR — afirma condiciones de cancelación y devolución
+      respuesta:
+        "Sí, avisando a la aseguradora. Pregúntale a tu asesor cómo queda lo que ya pagaste antes de cancelar.",
+    },
+    {
+      pregunta: "¿Cómo pago?",
+      // REVISAR — afirma medios de pago
+      respuesta:
+        "Con el medio que te ofrezca tu asesor al momento de cerrar. En esta página no se paga nada.",
+    },
+    {
+      pregunta: "¿Esto reemplaza a un asesor?",
+      respuesta:
+        "No, te lleva a uno. Esta página solo entiende en una frase qué quieres proteger, para que tu asesor no empiece de cero. Quien te recomienda y te asegura es él.",
+    },
+  ] satisfies PreguntaFaq[],
 } as const;
 
 /** Los seis pasos del recorrido. Ilustración de lo que hace el agente
