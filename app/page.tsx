@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { ComoFunciona } from "@/components/sections/ComoFunciona";
 import { Hero } from "@/components/sections/Hero";
 import type { Precarga } from "@/components/sections/Hero";
 import { Proteger } from "@/components/sections/Proteger";
@@ -24,6 +25,7 @@ export default function Home() {
           setPrecarga((anterior) => ({ frase, n: (anterior?.n ?? 0) + 1 }))
         }
       />
+      <ComoFunciona />
     </>
   );
 }
