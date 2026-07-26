@@ -144,9 +144,13 @@ export const progreso = {
 } as const;
 
 export const contacto = {
+  /** El 01 8000 se marca tal cual desde Colombia: el 01 es prefijo de
+   *  larga distancia nacional, no cabe en E.164. Anteponerle +57 1 le
+   *  mete el viejo indicativo de Bogotá y el número deja de enrutar.
+   *  Bogotá sí va en E.164 porque es un fijo de 10 dígitos real. */
   lineaNacional: {
     etiqueta: "Línea nacional 01 8000 947 900",
-    tel: "tel:+5718000947900",
+    tel: "tel:018000947900",
   },
   bogota: {
     etiqueta: "Bogotá +57 601 745 79 00",
