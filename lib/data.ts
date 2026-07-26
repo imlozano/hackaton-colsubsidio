@@ -1,4 +1,4 @@
-import type { ColumnaFooter, EnlaceNav } from "./types";
+import type { ColumnaFooter, EnlaceNav, Paso } from "./types";
 
 /**
  * Todo el copy del prototipo vive aquí. Nada de texto hardcodeado en JSX.
@@ -38,6 +38,71 @@ export const marca = {
     ancho: 1080,
     alto: 371,
   },
+} as const;
+
+/* ---------------------------------------------------------------
+   Hero conversacional — brief §4
+   --------------------------------------------------------------- */
+
+export const hero = {
+  /** Dos líneas, terminadas en punto: es un tic de la marca. */
+  titulo: ["No necesitas saber", "qué seguro necesitas."],
+  subtitulo:
+    "Cuéntanos qué quieres proteger y en 3 minutos quedas asegurado. Sin llamadas, sin asesor.",
+
+  /** Rotan cada 3.5s escribiéndose solas. La primera es del brief §4;
+   *  el resto salen de las situaciones de vida documentadas. */
+  placeholders: [
+    "Tengo moto y vivo con mi mamá…",
+    "Acabo de tener un bebé y no sé por dónde empezar…",
+    "Viajo el otro mes y nunca he comprado seguro…",
+    "Vivo solo con mi perro en un apartamento arrendado…",
+  ],
+
+  /** Ya en la conversación el input deja de invitar a contar la
+   *  situación y pasa a ser la barra de escritura del chat. */
+  // REVISAR — microcopy de interfaz, no viene de docs/
+  placeholderChat: "Escribe tu respuesta",
+
+  // REVISAR — microcopy de interfaz, no viene de docs/
+  etiquetaEntrada: "Cuéntanos qué quieres proteger",
+  // REVISAR
+  etiquetaEnviar: "Enviar mi situación al asesor",
+  // REVISAR
+  etiquetaEscribiendo: "El asesor está escribiendo",
+  // REVISAR
+  etiquetaConversacion: "Conversación con el asesor",
+
+  /** Situaciones de vida, no categorías de producto. Ese es el punto. */
+  chips: [
+    "Soy mamá primeriza",
+    "Compré moto",
+    "Viajo el otro mes",
+    "Vivo solo con mi perro",
+    "Cuido a mis papás",
+  ],
+
+  confianza: {
+    aliados: "Bolívar · Chubb · BMI",
+    sello: "Vigilado Supersubsidio",
+  },
+} as const;
+
+/** Los seis pasos del recorrido — brief §4. */
+export const pasos: Paso[] = [
+  { id: "diagnostico", nombre: "Diagnóstico" },
+  { id: "recomendacion", nombre: "Recomendación" },
+  { id: "cotizacion", nombre: "Cotización" },
+  { id: "datos", nombre: "Datos" },
+  { id: "pago", nombre: "Pago" },
+  { id: "poliza", nombre: "Póliza" },
+];
+
+export const progreso = {
+  // REVISAR — microcopy de interfaz, no viene de docs/
+  etiqueta: "Progreso de tu solicitud",
+  // REVISAR
+  plantilla: "Paso $n de $total",
 } as const;
 
 export const contacto = {

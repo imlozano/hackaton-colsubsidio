@@ -144,6 +144,8 @@
   /* ---- Contenedor ---- */
   --container-page: 1280px;
   --container-prosa: 65ch; /* ancho máximo de párrafo */
+  --container-hero: 720px; /* columna del hero, lo único centrado */
+  --container-prosa-hero: 60ch; /* subtítulo del hero */
 
   /* ============================================================
      Radios — geometría, no blandura. Píldora solo en botones y chips.
