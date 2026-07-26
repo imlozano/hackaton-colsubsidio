@@ -101,7 +101,7 @@ Las primas del prototipo son estimadas y así deben rotularse. No se presentan c
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  [logo]  Seguros                          Mis pólizas    │
+│  [logo]                                      Seguros     │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │   No necesitas saber                                     │
