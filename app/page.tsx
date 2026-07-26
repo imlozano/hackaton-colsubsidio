@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { ComoFunciona } from "@/components/sections/ComoFunciona";
+import { Faq } from "@/components/sections/Faq";
 import { Hero } from "@/components/sections/Hero";
 import type { Precarga } from "@/components/sections/Hero";
 import { Proteger } from "@/components/sections/Proteger";
@@ -26,6 +27,7 @@ export default function Home() {
         }
       />
       <ComoFunciona />
+      <Faq />
     </>
   );
 }

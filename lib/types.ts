@@ -27,12 +27,7 @@ export type ColumnaFooter = {
    --------------------------------------------------------------- */
 
 export type PasoId =
-  | "diagnostico"
-  | "recomendacion"
-  | "cotizacion"
-  | "datos"
-  | "pago"
-  | "poliza";
+  "diagnostico" | "recomendacion" | "cotizacion" | "datos" | "pago" | "poliza";
 
 export type Paso = {
   id: PasoId;
@@ -44,12 +39,7 @@ export type Paso = {
    --------------------------------------------------------------- */
 
 export type CategoriaId =
-  | "movilidad"
-  | "vida-familia"
-  | "mascotas"
-  | "viajes"
-  | "hogar"
-  | "exequial";
+  "movilidad" | "vida-familia" | "mascotas" | "viajes" | "hogar" | "exequial";
 
 export type Coincidencia = {
   /** La palabra buscada, ya normalizada: minúsculas y sin tildes. */

@@ -192,8 +192,7 @@ export const comoFunciona = {
   pasos: [
     {
       titulo: "Cuéntanos tu situación.",
-      detalle:
-        "En tus palabras. No necesitas conocer términos de seguros.",
+      detalle: "En tus palabras. No necesitas conocer términos de seguros.",
     },
     {
       titulo: "Tu asesor te muestra lo que te sirve.",
