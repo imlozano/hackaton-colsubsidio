@@ -47,14 +47,15 @@ export const ANCHO_ESCENARIO = 1280;
  * etapa de animaciones no tenga que tocar esta estructura.
  */
 export const escenaHero: HeroAssetConfig[] = [
-  /* --- Fondo: las nubes abren la escena por arriba, fuera del titular. --- */
+  /* --- Fondo. Las nubes son lo más pequeño y lo más alto: es lo que
+     da la sensación de lejanía sin recurrir a ningún efecto. --- */
   {
     id: "cloud-left",
     src: "/assets/hero/effects/cloud-left.webp",
     group: "background",
-    x: 0,
-    y: -6,
-    width: 15,
+    x: 1,
+    y: -5,
+    width: 12,
     rotation: -4,
     z: 1,
     animation: "none",
@@ -64,9 +65,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "cloud-right",
     src: "/assets/hero/effects/cloud-right.webp",
     group: "background",
-    x: 85,
-    y: -8,
-    width: 15,
+    x: 87,
+    y: -7,
+    width: 12,
     /* Es el mismo dibujo que cloud-left: sin un giro distinto se lee
        como la misma nube pegada dos veces. */
     rotation: 6,
@@ -75,32 +76,34 @@ export const escenaHero: HeroAssetConfig[] = [
     hideOnMobile: true,
   },
 
-  /* --- La plataforma es el punto de apoyo de la escena. ---
-     El encuadre arranca por encima de la línea de vigilancia, pero ahí
-     arriba está vacío: la tinta del cojín empieza al 28% del marco, ya
-     por debajo del texto. Entre esa línea y el borde de la sección solo
-     hay 128px, así que el ancho está calculado para que el cojín entre
-     entero justo en esa banda y siga siendo más ancho que el 24/7. */
+  /* --- La plataforma es base, no protagonista. ---
+     Deliberadamente pequeña: sostiene al 24/7 y nada más. El encuadre
+     arranca por encima de la línea de vigilancia, pero ahí arriba está
+     vacío —la tinta del cojín empieza al 28% del marco—, así que el
+     cojín entero cae en la banda libre y deja 37px de aire entre el
+     texto y la ilustración. Sigue siendo más ancho que el 24/7. */
   {
     id: "platform",
     src: "/assets/hero/objects/platform.webp",
     group: "background",
-    x: 38,
-    y: 80,
-    width: 24,
+    x: 42.2,
+    y: 86.8,
+    width: 15.5,
     z: 3,
     animation: "none",
     priority: true,
   },
 
-  /* --- Objetos, en los flancos. El contenido ocupa el 21.9%-78.1%. --- */
+  /* --- Objetos. Entran hacia el centro en vez de pegarse al borde:
+     encuadran el titular y el input en lugar de tirar de la mirada
+     hacia fuera. El contenido ocupa del 21.9% al 78.1%. --- */
   {
     id: "house",
     src: "/assets/hero/objects/house.webp",
     group: "background",
-    x: -1,
-    y: 30,
-    width: 21,
+    x: 2,
+    y: 33,
+    width: 19,
     z: 4,
     animation: "none",
     priority: true,
@@ -110,9 +113,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "laptop",
     src: "/assets/hero/objects/laptop.webp",
     group: "background",
-    x: 80,
-    y: 26,
-    width: 20,
+    x: 79,
+    y: 29,
+    width: 18,
     z: 5,
     animation: "none",
     hideOnMobile: true,
@@ -122,21 +125,22 @@ export const escenaHero: HeroAssetConfig[] = [
     src: "/assets/hero/objects/scooter.webp",
     group: "background",
     x: 80,
-    y: 66,
-    width: 21,
+    y: 63,
+    width: 19,
     z: 6,
     animation: "none",
     hideOnMobile: true,
   },
 
-  /* --- Efectos: acompañan a los objetos, nunca al texto. --- */
+  /* --- Efectos. Pequeños y a distinta altura, para romper la simetría
+     de espejo entre los dos flancos. --- */
   {
     id: "sparkle-1",
     src: "/assets/hero/effects/sparkle-1.webp",
     group: "background",
-    x: 15,
-    y: 22,
-    width: 8,
+    x: 16,
+    y: 24,
+    width: 6,
     z: 7,
     animation: "none",
     hideOnMobile: true,
@@ -145,30 +149,23 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "sparkle-2",
     src: "/assets/hero/effects/sparkle-2.webp",
     group: "background",
-    x: 78,
-    y: 18,
-    width: 8,
+    x: 79,
+    y: 17,
+    width: 6,
     z: 8,
     animation: "none",
     hideOnMobile: true,
   },
-  {
-    id: "arrow",
-    src: "/assets/hero/effects/arrow.webp",
-    group: "background",
-    /* Baja de izquierda a derecha y muere apuntando al 24/7. Se queda
-       antes del 28%, que es donde empieza la línea de vigilancia. */
-    x: 27,
-    y: 79,
-    width: 12,
-    z: 9,
-    animation: "none",
-    hideOnMobile: true,
-  },
 
-  /* --- El 24/7 es el eje central: centrado en el escenario y apoyado
-     sobre la plataforma. El paso de 3.9% entre marcos deja las cifras
-     juntas sin que se pisen, y el conjunto queda centrado en el 50%.
+  /* La flecha se fue. Solo servía para llevar la mirada al 24/7, y el
+     24/7 es ahora lo último de la jerarquía: subrayarlo con una flecha
+     era justo lo contrario de lo que tiene que pasar. Quitarla además
+     despeja la banda inferior. El asset sigue en public/assets/hero. */
+
+  /* --- El 24/7 cierra la jerarquía, detrás de H1, input y CTA. Va al
+     tamaño de un sello, no de un titular: apoya el mensaje de asistencia
+     sin disputarle la atención al contenido. Paso de 2.7% entre marcos,
+     centrado en el 50%.
      Ninguna lleva `rotation`, y no es un descuido: con transform el
      envoltorio crea contexto de apilamiento, el z de la cifra queda
      encerrado dentro y la plataforma (z:3, sin transform) le pasa por
@@ -177,9 +174,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "number-2",
     src: "/assets/hero/numbers/number-2.webp",
     group: "foreground",
-    x: 41.2,
-    y: 80,
-    width: 5.6,
+    x: 44,
+    y: 85.3,
+    width: 3.8,
     z: 10,
     animation: "none",
   },
@@ -187,9 +184,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "number-4",
     src: "/assets/hero/numbers/number-4.webp",
     group: "foreground",
-    x: 45.1,
-    y: 80.4,
-    width: 5.6,
+    x: 46.7,
+    y: 85.7,
+    width: 3.8,
     z: 11,
     animation: "none",
   },
@@ -197,9 +194,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "slash",
     src: "/assets/hero/numbers/slash.webp",
     group: "foreground",
-    x: 49.0,
-    y: 80,
-    width: 5.6,
+    x: 49.4,
+    y: 85.3,
+    width: 3.8,
     z: 12,
     animation: "none",
   },
@@ -207,21 +204,23 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "number-7",
     src: "/assets/hero/numbers/number-7.webp",
     group: "foreground",
-    x: 52.9,
-    y: 80.4,
-    width: 5.6,
+    x: 52.1,
+    y: 85.7,
+    width: 3.8,
     z: 13,
     animation: "none",
   },
 
-  /* --- Las mascotas cierran la escena flanqueando el eje. --- */
+  /* --- Las mascotas se meten en la escena en vez de sentarse en las
+     esquinas: entran hacia el centro, se emparejan con la casa y con el
+     patinete, y van a distinta altura para que no lean como un espejo. */
   {
     id: "mascot-left",
     src: "/assets/hero/characters/mascot-left.webp",
     group: "foreground",
-    x: 2,
-    y: 72,
-    width: 12,
+    x: 8,
+    y: 73,
+    width: 11,
     z: 14,
     animation: "none",
   },
@@ -229,9 +228,9 @@ export const escenaHero: HeroAssetConfig[] = [
     id: "mascot-right",
     src: "/assets/hero/characters/mascot-right.webp",
     group: "foreground",
-    x: 84,
-    y: 72,
-    width: 12,
+    x: 79,
+    y: 74,
+    width: 11,
     z: 15,
     animation: "none",
   },
