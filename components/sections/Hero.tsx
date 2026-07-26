@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { hero } from "@/lib/data";
@@ -128,10 +128,15 @@ export function Hero() {
           className="w-full overflow-hidden text-center"
         >
           <h1 className="text-hero text-balance md:text-hero-lg">
-            {hero.titulo.map((linea) => (
-              <span key={linea} className="block">
-                {linea}
-              </span>
+            {hero.titulo.map((linea, i) => (
+              /* El espacio entre líneas es un nodo de texto real: dos
+                 <span> en block se concatenan sin separación y el lector
+                 de pantalla leía "saberqué". Entre dos cajas de bloque el
+                 nodo en blanco no genera caja, así que no se ve nada. */
+              <Fragment key={linea}>
+                {i > 0 && " "}
+                <span className="block">{linea}</span>
+              </Fragment>
             ))}
           </h1>
           <p className="mx-auto mt-6 max-w-prosa-hero text-cuerpo text-ink-soft md:text-cuerpo-lg">
