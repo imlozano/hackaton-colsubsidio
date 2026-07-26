@@ -98,7 +98,6 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 15.5,
     z: 3,
     animation: "none",
-    priority: true,
     hideOnMobile: true,
   },
 
@@ -114,7 +113,6 @@ export const escenaHero: HeroAssetConfig[] = [
     width: 19,
     z: 4,
     animation: "none",
-    priority: true,
     hideOnMobile: true,
   },
   {
