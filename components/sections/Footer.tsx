@@ -4,20 +4,30 @@ import Link from "next/link";
 import { footer, marca } from "@/lib/data";
 import type { ItemFooter } from "@/lib/types";
 
-function ContenidoItem({ item }: { item: ItemFooter }) {
-  const clases =
-    "inline-flex min-h-11 items-center rounded-xs text-cuerpo text-blue-200";
+/* El área táctil se mantiene en 44px con padding, pero el -my-1 recorta
+   8px del espacio visible por fila para que la lista no se lea suelta. */
+const CLASES_ITEM =
+  "-my-1 inline-flex min-h-11 items-center rounded-xs py-2 text-cuerpo text-blue-200";
 
+function ContenidoItem({ item }: { item: ItemFooter }) {
   if (!item.href) {
     // Sin URL real, el ítem no navega. No inventamos destinos.
-    return <span className={clases}>{item.etiqueta}</span>;
+    return <span className={CLASES_ITEM}>{item.etiqueta}</span>;
+  }
+
+  const clases = `${CLASES_ITEM} transition-colors duration-150 hover:text-white`;
+
+  // tel: no es una ruta de la app; next/link es solo para navegación interna.
+  if (item.href.startsWith("tel:")) {
+    return (
+      <a href={item.href} className={clases}>
+        {item.etiqueta}
+      </a>
+    );
   }
 
   return (
-    <Link
-      href={item.href}
-      className={`${clases} transition-colors duration-150 hover:text-white`}
-    >
+    <Link href={item.href} className={clases}>
       {item.etiqueta}
     </Link>
   );
@@ -33,7 +43,7 @@ export function Footer() {
               <h2 className="font-mono text-eyebrow tracking-eyebrow text-white uppercase">
                 {columna.titulo}
               </h2>
-              <ul className="mt-4 flex flex-col">
+              <ul className="mt-3 flex flex-col">
                 {columna.items.map((item) => (
                   <li key={item.etiqueta}>
                     <ContenidoItem item={item} />
@@ -49,7 +59,7 @@ export function Footer() {
             </h2>
             {/* El sello es una pieza legal: va en sus colores oficiales,
                 sobre superficie blanca para que se lea sobre el azul. */}
-            <div className="mt-4 inline-flex rounded-sm bg-surface px-3 py-2">
+            <div className="mt-3 inline-flex rounded-sm bg-surface px-3 py-2">
               <Image
                 src={marca.sello.src}
                 alt={marca.sello.alt}
