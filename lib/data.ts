@@ -16,7 +16,6 @@ export const sitio = {
  *  Un anchor sin destino no navega; nunca produce un 404 en el demo. */
 export const navegacion: EnlaceNav[] = [
   { etiqueta: "Seguros", href: "#proteger" },
-  { etiqueta: "Mis pólizas", href: "#poliza" },
 ];
 
 export const marca = {
