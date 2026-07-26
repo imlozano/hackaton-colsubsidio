@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 
+import { HeroScene } from "@/components/hero/HeroScene";
 import { Button } from "@/components/ui/Button";
 import { hero } from "@/lib/data";
 import { clasificar } from "@/lib/intencion";
@@ -109,8 +110,14 @@ export function Hero() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32">
-      <div className="mx-auto flex w-full max-w-hero flex-col items-center">
+    /* `overflow-hidden` recorta la ilustración contra los bordes de la
+       sección: a 390px los assets asoman por los flancos y sin esto
+       aparecería scroll horizontal. */
+    <section className="relative mx-auto w-full max-w-page overflow-hidden px-5 py-16 md:px-10 md:py-32">
+      <HeroScene />
+
+      {/* El contenido va por encima de la ilustración, siempre. */}
+      <div className="relative z-10 mx-auto flex w-full max-w-hero flex-col items-center">
         {/* Titular. No se desmonta: la página siempre conserva su único
             <h1>, aunque tras enviar quede fuera de vista. */}
         {/* Ningún `initial` ni `layout` puede depender de `reducido`: el
