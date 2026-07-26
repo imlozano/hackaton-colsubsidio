@@ -2,13 +2,12 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { ProgressBar } from "@/components/ui/ProgressBar";
-import { consultarAsesor } from "@/lib/asesor";
 import { hero } from "@/lib/data";
-import type { Mensaje, PasoId } from "@/lib/types";
+import { clasificar } from "@/lib/intencion";
+import type { Coincidencia } from "@/lib/types";
 
 /* Movimiento — brief §2. Un solo momento coreografiado: esta transición. */
 const SUAVE = [0.22, 1, 0.36, 1] as const;
@@ -19,11 +18,20 @@ const SALIDA_TITULAR = { duration: 0.25, ease: SUAVE };
 const MS_POR_CARACTER = 45;
 const MS_POR_FRASE = 3500;
 
+/** Destino del agente de voz. Sin la variable, el botón se deshabilita. */
+const URL_PRODUCTO = process.env.NEXT_PUBLIC_URL_PRODUCTO;
+
+/** `null` mientras no esté escribiendo: así el primer render —servidor y
+ *  cliente— siempre muestra la misma frase completa y no hay desajuste al
+ *  hidratar, tenga el usuario movimiento reducido o no. */
 function usePlaceholderEscrito(frases: readonly string[], activo: boolean) {
-  const [texto, setTexto] = useState("");
+  const [texto, setTexto] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!activo) return;
+    if (!activo) {
+      setTexto(null);
+      return;
+    }
 
     let frase = 0;
     let caracter = 0;
@@ -53,96 +61,66 @@ function usePlaceholderEscrito(frases: readonly string[], activo: boolean) {
   return texto;
 }
 
-function Escribiendo() {
-  const reducido = useReducedMotion();
+/** La frase y la categoría viajan como query params al agente. */
+function destino(frase: string, coincidencia: Coincidencia | null) {
+  if (!URL_PRODUCTO) return null;
 
-  return (
-    <div className="flex items-center gap-2 py-3">
-      <span className="sr-only">{hero.etiquetaEscribiendo}</span>
-      <span aria-hidden="true" className="flex gap-1">
-        {[0, 1, 2].map((punto) => (
-          <motion.span
-            key={punto}
-            className="block size-2 rounded-full bg-ink-mute"
-            animate={reducido ? undefined : { opacity: [0.3, 1, 0.3] }}
-            transition={{
-              duration: 1.2,
-              repeat: Infinity,
-              delay: punto * 0.15,
-            }}
-          />
-        ))}
-      </span>
-    </div>
-  );
+  try {
+    const url = new URL(URL_PRODUCTO);
+    url.searchParams.set("frase", frase);
+    if (coincidencia) url.searchParams.set("categoria", coincidencia.categoria);
+    return url.toString();
+  } catch {
+    // URL mal formada en el entorno: mejor botón deshabilitado que 404.
+    return null;
+  }
 }
 
 export function Hero() {
   const reducido = useReducedMotion();
 
-  const [conversando, setConversando] = useState(false);
   const [valor, setValor] = useState("");
-  const [mensajes, setMensajes] = useState<Mensaje[]>([]);
-  const [escribiendo, setEscribiendo] = useState(false);
-  const [pasoActivo, setPasoActivo] = useState<PasoId>("diagnostico");
+  const [enviado, setEnviado] = useState<string | null>(null);
   const [enfocado, setEnfocado] = useState(false);
 
-  const contador = useRef(0);
-  const nodoRef = useRef<PasoId | null>(null);
-
-  /* Se detiene al hacer foco, si ya hay texto escrito, cuando arranca la
-     conversación, y siempre que el usuario pidió menos movimiento. */
-  const animaPlaceholder =
-    !enfocado && !valor && !conversando && !reducido;
+  /* Se detiene al hacer foco, si ya hay texto escrito, después de enviar,
+     y siempre que el usuario pidió menos movimiento. */
+  const animaPlaceholder = !enfocado && !valor && !enviado && !reducido;
   const escrito = usePlaceholderEscrito(hero.placeholders, animaPlaceholder);
-  const placeholder = conversando
-    ? hero.placeholderChat
-    : animaPlaceholder
-      ? escrito
-      : hero.placeholders[0];
+  const placeholder = escrito ?? hero.placeholders[0];
 
-  const enviar = useCallback(
-    async (texto: string) => {
-      const limpio = texto.trim();
-      if (!limpio || escribiendo) return;
+  const coincidencia = enviado ? clasificar(enviado) : null;
+  const url = enviado ? destino(enviado, coincidencia) : null;
 
-      setConversando(true);
-      setValor("");
-      contador.current += 1;
-      setMensajes((previos) => [
-        ...previos,
-        { id: `u${contador.current}`, autor: "usuario", texto: limpio },
-      ]);
-      setEscribiendo(true);
+  const reconocimiento = coincidencia
+    ? hero.reconocimiento.replace("$sujeto", coincidencia.sujeto)
+    : hero.reconocimientoNeutro;
 
-      const respuesta = await consultarAsesor(limpio, nodoRef.current);
+  function enviar(texto: string) {
+    const limpio = texto.trim();
+    if (!limpio) return;
+    setValor(limpio);
+    setEnviado(limpio);
+  }
 
-      nodoRef.current = respuesta.siguientePaso;
-      setEscribiendo(false);
-      setPasoActivo(respuesta.siguientePaso);
-      contador.current += 1;
-      setMensajes((previos) => [
-        ...previos,
-        {
-          id: `a${contador.current}`,
-          autor: "asesor",
-          texto: respuesta.mensaje,
-          opciones: respuesta.opciones,
-        },
-      ]);
-    },
-    [escribiendo],
-  );
+  function reiniciar() {
+    setEnviado(null);
+    setValor("");
+  }
 
   return (
     <section className="mx-auto w-full max-w-page px-5 py-16 md:px-10 md:py-32">
       <div className="mx-auto flex w-full max-w-hero flex-col items-center">
         {/* Titular. No se desmonta: la página siempre conserva su único
-            <h1>, aunque en la conversación quede fuera de vista. */}
+            <h1>, aunque tras enviar quede fuera de vista. */}
+        {/* Ningún `initial` ni `layout` puede depender de `reducido`: el
+            servidor no conoce la preferencia del usuario y el marcado no
+            coincidiría al hidratar. La preferencia solo cambia duraciones,
+            que no afectan el primer render. */}
         <motion.div
-          layout={!reducido}
+          layout
           animate={
-            conversando
+            enviado
               ? { opacity: 0, y: -12, height: 0 }
               : { opacity: 1, y: 0, height: "auto" }
           }
@@ -162,122 +140,105 @@ export function Hero() {
           <div className="h-12" />
         </motion.div>
 
-        {/* Barra de progreso — solo durante la conversación. */}
+        {/* Reconocimiento y entrega. Sin precios, sin coberturas, sin
+            recomendación de producto: nada de eso es nuestro. */}
+        <div
+          aria-live="polite"
+          aria-label={hero.etiquetaReconocimiento}
+          className="w-full"
+        >
+          <AnimatePresence>
+            {enviado && (
+              <motion.div
+                key="reconocimiento"
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={reducido ? { duration: 0 } : ENTRADA}
+                className="mb-8 w-full text-center"
+              >
+                <p className="text-subtitulo text-balance md:text-subtitulo-lg">
+                  {reconocimiento}
+                </p>
+
+                <div className="mt-8 flex flex-col items-center gap-4">
+                  {url ? (
+                    <Button onClick={() => window.location.assign(url)}>
+                      {hero.entrega.boton}
+                    </Button>
+                  ) : (
+                    <Button disabled aria-disabled="true">
+                      {hero.entrega.botonSinDestino}
+                    </Button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={reiniciar}
+                    className="inline-flex min-h-11 items-center rounded-xs px-2 text-cuerpo text-ink-soft underline underline-offset-4 transition-colors duration-150 hover:text-ink"
+                  >
+                    {hero.entrega.volver}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* El input solo existe antes de enviar: una vez entendida la
+            frase, lo que sigue es la entrega, no seguir escribiendo. */}
         <AnimatePresence>
-          {conversando && (
-            <motion.div
-              key="progreso"
-              layout={!reducido}
-              initial={reducido ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+          {!enviado && (
+            <motion.form
+              key="entrada"
+              layout
               exit={{ opacity: 0 }}
               transition={reducido ? { duration: 0 } : ENTRADA}
-              className="mb-12 w-full"
+              onSubmit={(evento) => {
+                evento.preventDefault();
+                enviar(valor);
+              }}
+              className="w-full"
             >
-              <ProgressBar pasoActivo={pasoActivo} />
-            </motion.div>
+              <label htmlFor="entrada-hero" className="sr-only">
+                {hero.etiquetaEntrada}
+              </label>
+              <div className="relative">
+                <input
+                  id="entrada-hero"
+                  type="text"
+                  autoComplete="off"
+                  value={valor}
+                  placeholder={placeholder}
+                  onChange={(evento) => setValor(evento.target.value)}
+                  onFocus={() => setEnfocado(true)}
+                  onBlur={() => setEnfocado(false)}
+                  /* 60px de alto los fija el brief §4 para este input. */
+                  className="h-[60px] w-full rounded-lg border border-line bg-surface pr-16 pl-6 text-cuerpo text-ink placeholder:text-ink-mute focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:outline-none"
+                />
+                {/* Circular, no píldora: por eso no usa Button. */}
+                <button
+                  type="submit"
+                  aria-label={hero.etiquetaEnviar}
+                  className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full bg-blue-500 text-white transition-colors duration-150 hover:bg-blue-600"
+                >
+                  <ArrowRight
+                    aria-hidden="true"
+                    strokeWidth={1.5}
+                    className="size-6"
+                  />
+                </button>
+              </div>
+            </motion.form>
           )}
         </AnimatePresence>
 
-        {/* Conversación. */}
-        <div
-          aria-live="polite"
-          aria-label={hero.etiquetaConversacion}
-          className="flex w-full flex-col gap-4 text-left"
-        >
-          <AnimatePresence initial={false}>
-            {mensajes.map((mensaje) => (
-              <motion.div
-                key={mensaje.id}
-                initial={reducido ? false : { opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={reducido ? { duration: 0 } : ENTRADA}
-                className={
-                  mensaje.autor === "usuario" ? "self-end" : "self-start"
-                }
-              >
-                <p
-                  className={`max-w-prosa rounded-lg px-4 py-3 text-cuerpo ${
-                    mensaje.autor === "usuario"
-                      ? "bg-blue-50 text-ink"
-                      : "bg-surface text-ink"
-                  }`}
-                >
-                  {mensaje.texto}
-                </p>
-
-                {mensaje.opciones && mensaje.opciones.length > 0 && (
-                  <ul className="mt-3 flex flex-wrap gap-2">
-                    {mensaje.opciones.map((opcion) => (
-                      <li key={opcion}>
-                        <Button
-                          variante="opcion"
-                          onClick={() => enviar(opcion)}
-                          disabled={escribiendo}
-                        >
-                          {opcion}
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {escribiendo && <Escribiendo />}
-        </div>
-
-        {/* El input: en reposo es la entrada del hero; al conversar baja y
-            se vuelve la barra de escritura del chat. Es el mismo nodo, por
-            eso se anima de posición en vez de remontarse. */}
-        <motion.form
-          layout={!reducido}
-          transition={reducido ? { duration: 0 } : ENTRADA}
-          onSubmit={(evento) => {
-            evento.preventDefault();
-            enviar(valor);
-          }}
-          className={`w-full ${conversando ? "mt-6" : ""}`}
-        >
-          <label htmlFor="entrada-asesor" className="sr-only">
-            {hero.etiquetaEntrada}
-          </label>
-          <div className="relative">
-            <input
-              id="entrada-asesor"
-              type="text"
-              autoComplete="off"
-              value={valor}
-              placeholder={placeholder}
-              onChange={(evento) => setValor(evento.target.value)}
-              onFocus={() => setEnfocado(true)}
-              onBlur={() => setEnfocado(false)}
-              /* 60px de alto los fija el brief §4 para este input. */
-              className="h-[60px] w-full rounded-lg border border-line bg-surface pr-16 pl-6 text-cuerpo text-ink placeholder:text-ink-mute focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100 focus-visible:outline-none"
-            />
-            {/* Circular, no píldora: por eso no usa Button. */}
-            <button
-              type="submit"
-              aria-label={hero.etiquetaEnviar}
-              disabled={escribiendo}
-              className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-full bg-blue-500 text-white transition-colors duration-150 hover:bg-blue-600 disabled:opacity-50"
-            >
-              <ArrowRight
-                aria-hidden="true"
-                strokeWidth={1.5}
-                className="size-6"
-              />
-            </button>
-          </div>
-        </motion.form>
-
-        {/* Chips de situación de vida — solo en reposo. */}
+        {/* Chips de situación de vida — solo antes de enviar. */}
         <AnimatePresence>
-          {!conversando && (
+          {!enviado && (
             <motion.ul
               key="chips"
-              layout={!reducido}
+              layout
               initial={false}
               exit={{ opacity: 0 }}
               transition={reducido ? { duration: 0 } : SALIDA_TITULAR}
@@ -286,12 +247,10 @@ export function Hero() {
               {hero.chips.map((chip, i) => (
                 <motion.li
                   key={chip}
-                  initial={reducido ? false : { opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={
-                    reducido
-                      ? { duration: 0 }
-                      : { ...ENTRADA, delay: 0.06 * i }
+                    reducido ? { duration: 0 } : { ...ENTRADA, delay: 0.06 * i }
                   }
                 >
                   <Button variante="chip" onClick={() => enviar(chip)}>
@@ -305,7 +264,7 @@ export function Hero() {
 
         <p className="mt-16 flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-eyebrow tracking-eyebrow text-ink-mute uppercase">
           <span>{hero.confianza.aliados}</span>
-          <span>{hero.confianza.sello}</span>
+          <span>{hero.confianza.sellos}</span>
         </p>
       </div>
     </section>

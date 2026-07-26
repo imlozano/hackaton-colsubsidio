@@ -98,13 +98,17 @@ Contrastes verificados sobre lienzo `#F9F9F9`:
 | Logo Colsubsidio horizontal (PNG) | `innovacion.colsubsidio.com/Colsubsidio_horizontal.png` |
 | Logo Colsubsidio (SVG) | `colsubsidio.com/assets/icons/logo-colsubsidio.svg` |
 | Logo 30X (SVG) | `innovacion.colsubsidio.com/30x-ink.svg` |
-| Vigilado Supersubsidio | `innovacion.colsubsidio.com/vigilado-supersubsidio.png` |
+| Vigilado Supersubsidio, variante oscura (PNG) | `innovacion.colsubsidio.com/vigilado-supersubsidio.png` |
+| Vigilado Supersubsidio, variante blanca (SVG) | `cms.colsubsidio.com/.../Vigilado SuperSubsidio.svg` |
+| Vigilado Supersalud, variante blanca (SVG) | `cms.colsubsidio.com/.../Logo-Vigilado-Supersalud-2024-white_0.svg` |
+
+Los dos SVG de sellos son **variantes blancas**, hechas para fondo oscuro: sobre el footer `blue-950` se leen sin recolorear nada. El PNG oscuro queda para fondos claros.
 
 Si el sitio se cae durante el demo y estabas hotlinkeando, tu página queda rota. Descárgalos.
 
 ## 6. Legal — no negociable
 
-- El sello correcto es **Vigilado Supersubsidio**. Colsubsidio es una caja de compensación.
+- Los sellos correctos son **Vigilado Supersubsidio** y **Vigilado Supersalud**, y van **los dos**, como en el footer real de colsubsidio.com. Colsubsidio es una caja de compensación y además opera servicios de salud.
 - **NO escribas "Vigilado Superintendencia Financiera de Colombia".** Esa vigila a las aseguradoras (Bolívar, Chubb, BMI), no a Colsubsidio. Es un error que un jurado de una entidad vigilada detecta de inmediato.
 - Disclaimer obligatorio en el footer:
   > Prototipo desarrollado para la Hackathon Colsubsidio × 30X. No constituye una oferta comercial ni un contrato de seguro.

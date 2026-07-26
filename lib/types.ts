@@ -22,10 +22,10 @@ export type ColumnaFooter = {
 };
 
 /* ---------------------------------------------------------------
-   Asesor conversacional
+   Recorrido — ilustración estática dentro de "Cómo funciona".
+   Lo que pasa después de la entrega lo hace el agente de voz.
    --------------------------------------------------------------- */
 
-/** Los seis pasos del recorrido, en orden. */
 export type PasoId =
   | "diagnostico"
   | "recomendacion"
@@ -39,29 +39,36 @@ export type Paso = {
   nombre: string;
 };
 
-/** Un nodo del guion en lib/conversacion.ts. */
-export type NodoConversacion = {
-  mensaje: string;
-  opciones: string[];
-  siguientePaso: PasoId;
+/* ---------------------------------------------------------------
+   Clasificación por palabras clave — lib/intencion.ts
+   --------------------------------------------------------------- */
+
+export type CategoriaId =
+  | "movilidad"
+  | "vida-familia"
+  | "mascotas"
+  | "viajes"
+  | "hogar"
+  | "exequial";
+
+export type Coincidencia = {
+  /** La palabra buscada, ya normalizada: minúsculas y sin tildes. */
+  termino: string;
+  categoria: CategoriaId;
+  /** Cómo se nombra en el reconocimiento: "tu moto", "a tu bebé". */
+  sujeto: string;
 };
 
-/** Forma de respuesta fijada por el brief §8. En la Etapa 2 solo se
- *  ejercita el diagnóstico, así que producto, prima y coberturas viajan
- *  vacíos; la Etapa 4 los llena y ahí se afinan sus tipos. */
-export type RespuestaAsesor = {
-  mensaje: string;
-  opciones: string[];
-  productoRecomendado: string | null;
-  alternativas: string[];
-  prima: number | null;
-  coberturas: string[];
-  siguientePaso: PasoId;
-};
+/* ---------------------------------------------------------------
+   Banda del tangram
+   --------------------------------------------------------------- */
 
-export type Mensaje = {
-  id: string;
-  autor: "usuario" | "asesor";
-  texto: string;
-  opciones?: string[];
+export type PiezaTangram = {
+  nombre: string;
+  /** Vértices en el espacio del tangram, antes de proyectar. */
+  puntos: [number, number][];
+  /** Utilidad de Tailwind: el color sale del token, nunca de un hex. */
+  relleno: string;
+  /** De dónde entra la pieza: desplazamiento y giro iniciales. */
+  desde: { x: number; y: number; giro: number };
 };

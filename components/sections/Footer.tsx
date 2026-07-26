@@ -16,11 +16,17 @@ function ContenidoItem({ item }: { item: ItemFooter }) {
   }
 
   const clases = `${CLASES_ITEM} transition-colors duration-150 hover:text-white`;
+  const externo = item.href.startsWith("http");
 
-  // tel: no es una ruta de la app; next/link es solo para navegación interna.
-  if (item.href.startsWith("tel:")) {
+  // next/link es solo para navegación interna: ni tel: ni colsubsidio.com
+  // son rutas de esta app.
+  if (externo || item.href.startsWith("tel:")) {
     return (
-      <a href={item.href} className={clases}>
+      <a
+        href={item.href}
+        className={clases}
+        {...(externo && { target: "_blank", rel: "noopener noreferrer" })}
+      >
         {item.etiqueta}
       </a>
     );
@@ -57,16 +63,20 @@ export function Footer() {
             <h2 className="font-mono text-eyebrow tracking-eyebrow text-white uppercase">
               {footer.vigilancia.titulo}
             </h2>
-            {/* El sello es una pieza legal: va en sus colores oficiales,
-                sobre superficie blanca para que se lea sobre el azul. */}
-            <div className="mt-3 inline-flex rounded-sm bg-surface px-3 py-2">
-              <Image
-                src={marca.sello.src}
-                alt={marca.sello.alt}
-                width={marca.sello.ancho}
-                height={marca.sello.alto}
-                className="h-6 w-auto"
-              />
+            {/* Los dos sellos, como en el footer real de Colsubsidio.
+                Son las variantes blancas oficiales: se leen sobre el azul
+                sin recolorear ni redibujar nada. */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-4">
+              {marca.sellos.map((sello) => (
+                <Image
+                  key={sello.alt}
+                  src={sello.src}
+                  alt={sello.alt}
+                  width={sello.ancho}
+                  height={sello.alto}
+                  className={`${sello.clase} w-auto`}
+                />
+              ))}
             </div>
             <p className="mt-3 max-w-prosa text-cuerpo text-blue-200">
               {footer.vigilancia.nota}

@@ -2,10 +2,16 @@
 
 ## Qué es este proyecto
 
-Prototipo de venta 100% autoservicio de seguros para la Hackathon Colsubsidio × 30X.
-El reto: llevar al usuario desde "no sé qué seguro necesito" hasta "ya quedé asegurado", sin intervención humana.
+Landing de captación de seguros para la Hackathon Colsubsidio × 30X.
 
-**Entrega: domingo 26 de julio.** Prioriza que el recorrido completo funcione sobre que cualquier sección esté pulida.
+El reto completo —llevar al usuario desde "no sé qué seguro necesito" hasta "ya quedé asegurado"— lo resuelve el equipo entre dos piezas:
+
+- **Esta landing**: recoge en una frase qué quiere proteger el usuario, le confirma que la entendió, y lo entrega al agente.
+- **El agente de voz** (lo construye otro miembro del equipo): hace el diagnóstico, la recomendación y la venta.
+
+**Esta landing no simula el asesor, no cotiza, no vende y no emite pólizas.** Su único trabajo es que el usuario llegue al agente con contexto.
+
+**Entrega: domingo 26 de julio.** Prioriza que la entrega al agente funcione sobre que cualquier sección esté pulida.
 
 ## Fuente de verdad
 
@@ -45,14 +51,12 @@ pnpm dlx <herramienta>       # en vez de npx
 
 ## Esto es solo frontend
 
-**No hay backend y no debe haberlo.** Todo se simula en el cliente:
+**No hay backend y no debe haberlo.** Tampoco hay asesor simulado:
 
-- Catálogo, primas y copy en `lib/data.ts`
-- Guion del asesor en `lib/conversacion.ts`, como árbol de decisión
-- Toda la simulación se encapsula en **una sola función** en `lib/asesor.ts`, que devuelve una promesa con retraso de 600–900ms. En ningún otro archivo hay lógica simulada.
-- Forma de la respuesta:
-  `{ mensaje, opciones[], productoRecomendado, alternativas[], prima, coberturas[], siguientePaso }`
-- Pago y emisión de póliza son simulados. El número de póliza se genera en el cliente.
+- Catálogo y copy en `lib/data.ts`
+- `lib/intencion.ts` clasifica la frase del usuario por **coincidencia de palabras clave** y devuelve una categoría. Es clasificación, no un asesor: no conversa, no recomienda producto, no calcula primas, no tiene turnos.
+- El hero no muestra precios, coberturas ni recomendaciones. Nada de eso es nuestro.
+- La entrega al agente es una navegación a `NEXT_PUBLIC_URL_PRODUCTO` con la frase y la categoría como query params. **Si la variable no existe, el botón queda deshabilitado con texto neutro — nunca roto.**
 
 ## Reglas no negociables
 
@@ -63,7 +67,7 @@ pnpm dlx <herramienta>       # en vez de npx
 5. **Escala de espaciado únicamente** 4/8/12/16/24/32/48/64/96, con padding vertical idéntico entre todas las secciones.
 6. **Mobile-first.** Se prueba a 390px. Sin scroll horizontal. Área táctil mínima 44×44px.
 7. **No inventes contenido.** Si falta un dato, precio, nombre o cifra, déjalo como `TODO` visible y avísame. Jamás rellenes con datos plausibles.
-8. **Legal:** el sello es *Vigilado Supersubsidio*. **Nunca escribas "Superintendencia Financiera"** — esa vigila a las aseguradoras, no a Colsubsidio. El disclaimer de prototipo va siempre en el footer. Las primas se rotulan como estimadas.
+8. **Legal:** los sellos son *Vigilado Supersubsidio* y *Vigilado Supersalud*, los dos, como en el footer real de Colsubsidio. **Nunca escribas "Superintendencia Financiera"** — esa vigila a las aseguradoras, no a Colsubsidio. El disclaimer de prototipo va siempre en el footer. Si alguna vez aparece una prima, se rotula como estimada.
 9. **No inventes ni redibujes logos.** Se usan los archivos de `/public/brand`.
 10. Contraste AA 4.5:1, foco visible, `prefers-reduced-motion`, HTML semántico, un solo `<h1>`.
 11. Todo el copy vive en `lib/data.ts`, nunca hardcodeado en JSX.
@@ -78,8 +82,11 @@ pnpm dlx <herramienta>       # en vez de npx
 - Tarjetas con borde + sombra + fondo distinto al mismo tiempo
 - Más de dos pesos tipográficos por sección
 - Parallax, blobs, partículas, gradientes animados
+- Scroll-scrubbing: en móvil es frágil. Para entrar en viewport se usa `whileInView`
+- Ilustraciones 3D, personajes, mascotas o imágenes generadas con IA. Colsubsidio no tiene mascota; inventarle una equivale a inventarle un logo
 - Fotos de stock de gente sonriendo
 - Estadísticas o contadores inventados
+- Simular el asesor, cotizar, cobrar o emitir pólizas. Eso es del agente de voz
 - Secciones fuera del alcance del brief
 
 ## Cómo trabajamos
@@ -93,7 +100,7 @@ pnpm dlx <herramienta>       # en vez de npx
 ## Etapas
 
 1. Cimientos: proyecto, tokens `@theme`, fuentes, assets, nav y footer
-2. Hero conversacional con sus dos estados y la transición
-3. Secciones restantes de la home
-4. Flujo simulado: recomendación → cotización → datos → pago → póliza
+2. Hero con sus dos estados y la transición
+3. Secciones restantes de la home, incluida la banda del tangram
+4. Entrega al agente: `lib/intencion.ts`, reconocimiento y salida a `NEXT_PUBLIC_URL_PRODUCTO`
 5. Pulido: responsive 390px, accesibilidad, deploy

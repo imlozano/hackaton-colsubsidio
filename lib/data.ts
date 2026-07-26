@@ -9,7 +9,7 @@ export const sitio = {
   nombre: "Seguros Colsubsidio",
   titulo: "Seguros Colsubsidio — quedas asegurado en 3 minutos",
   descripcion:
-    "Cuéntanos qué quieres proteger y en 3 minutos quedas asegurado. Sin llamadas, sin asesor.",
+    "Cuéntanos qué quieres proteger y en 3 minutos quedas asegurado. Sin llamadas, sin papeleo.",
 } as const;
 
 /** Los anchors apuntan a secciones que llegan en etapas siguientes.
@@ -26,12 +26,24 @@ export const marca = {
     ancho: 181,
     alto: 36,
   },
-  sello: {
-    src: "/brand/vigilado-supersubsidio.png",
-    alt: "Vigilado Supersubsidio",
-    ancho: 769,
-    alto: 119,
-  },
+  /** Variantes blancas, hechas para fondo oscuro: sobre el footer
+   *  blue-950 se leen sin recolorear nada. */
+  sellos: [
+    {
+      src: "/brand/vigilado-supersubsidio.svg",
+      alt: "Vigilado Supersubsidio",
+      ancho: 152,
+      alto: 23,
+      clase: "h-4",
+    },
+    {
+      src: "/brand/vigilado-supersalud-blanco.svg",
+      alt: "Vigilado Supersalud",
+      ancho: 492,
+      alto: 153,
+      clase: "h-8",
+    },
+  ],
   hackathon: {
     src: "/brand/30x-ink.svg",
     alt: "30X",
@@ -41,14 +53,14 @@ export const marca = {
 } as const;
 
 /* ---------------------------------------------------------------
-   Hero conversacional — brief §4
+   Hero — brief §4
    --------------------------------------------------------------- */
 
 export const hero = {
   /** Dos líneas, terminadas en punto: es un tic de la marca. */
   titulo: ["No necesitas saber", "qué seguro necesitas."],
   subtitulo:
-    "Cuéntanos qué quieres proteger y en 3 minutos quedas asegurado. Sin llamadas, sin asesor.",
+    "Cuéntanos qué quieres proteger y en 3 minutos quedas asegurado. Sin llamadas, sin papeleo.",
 
   /** Rotan cada 3.5s escribiéndose solas. La primera es del brief §4;
    *  el resto salen de las situaciones de vida documentadas. */
@@ -59,19 +71,20 @@ export const hero = {
     "Vivo solo con mi perro en un apartamento arrendado…",
   ],
 
-  /** Ya en la conversación el input deja de invitar a contar la
-   *  situación y pasa a ser la barra de escritura del chat. */
-  // REVISAR — microcopy de interfaz, no viene de docs/
-  placeholderChat: "Escribe tu respuesta",
-
   // REVISAR — microcopy de interfaz, no viene de docs/
   etiquetaEntrada: "Cuéntanos qué quieres proteger",
   // REVISAR
-  etiquetaEnviar: "Enviar mi situación al asesor",
+  etiquetaEnviar: "Enviar lo que quiero proteger",
   // REVISAR
-  etiquetaEscribiendo: "El asesor está escribiendo",
+  etiquetaReconocimiento: "Lo que entendimos",
+
+  /** El reconocimiento no recomienda producto ni menciona precios:
+   *  solo confirma que se entendió, y de ahí se entrega al agente. */
   // REVISAR
-  etiquetaConversacion: "Conversación con el asesor",
+  reconocimiento: "Entendí que quieres proteger $sujeto.",
+  // REVISAR — cuando no se reconoce nada, se continúa igual
+  reconocimientoNeutro:
+    "No alcancé a identificar qué quieres proteger, pero tu asesor sí puede.",
 
   /** Situaciones de vida, no categorías de producto. Ese es el punto. */
   chips: [
@@ -82,13 +95,38 @@ export const hero = {
     "Cuido a mis papás",
   ],
 
+  entrega: {
+    // REVISAR
+    boton: "Continuar con mi asesor",
+    /** Sin NEXT_PUBLIC_URL_PRODUCTO el botón se deshabilita con este
+     *  texto. Nunca un enlace roto delante del jurado. */
+    // REVISAR
+    botonSinDestino: "Tu asesor estará disponible muy pronto",
+    // REVISAR
+    volver: "Escribir otra cosa",
+  },
+
   confianza: {
     aliados: "Bolívar · Chubb · BMI",
-    sello: "Vigilado Supersubsidio",
+    sellos: "Vigilado Supersubsidio · Vigilado Supersalud",
   },
 } as const;
 
-/** Los seis pasos del recorrido — brief §4. */
+/* ---------------------------------------------------------------
+   Banda del tangram — brief §5
+   --------------------------------------------------------------- */
+
+export const tangram = {
+  // REVISAR — titular y línea de apoyo, no vienen de docs/
+  titulo: "Cada pieza protege algo distinto.",
+  // REVISAR
+  apoyo: "No necesitas todas. Solo las que sostienen tu vida.",
+  // REVISAR — texto alternativo de la ilustración
+  alt: "Siete piezas de tangram que se ensamblan formando un techo",
+} as const;
+
+/** Los seis pasos del recorrido. Ilustración de lo que hace el agente
+ *  después de la entrega, no un indicador vivo. */
 export const pasos: Paso[] = [
   { id: "diagnostico", nombre: "Diagnóstico" },
   { id: "recomendacion", nombre: "Recomendación" },
@@ -142,16 +180,26 @@ export const footer = {
       ],
     },
     {
-      // Sin enlaces: no inventamos URLs de legales.
       titulo: "Legales",
-      items: [{ etiqueta: "Tratamiento de datos" }, { etiqueta: "PQRS" }],
+      items: [
+        {
+          etiqueta: "Tratamiento de datos",
+          href: "https://www.colsubsidio.com/tratamientos-personales",
+        },
+        { etiqueta: "PQRS", href: "https://www.colsubsidio.com/pqrs" },
+        {
+          etiqueta: "Defensor del afiliado",
+          href: "https://www.colsubsidio.com/compromiso-con-clientes/defensor-afiliado",
+        },
+      ],
     },
   ] satisfies ColumnaFooter[],
 
   vigilancia: {
     titulo: "Vigilancia",
-    /** Colsubsidio es caja de compensación: la vigila Supersubsidio.
-     *  Nunca la superintendencia que vigila a las aseguradoras. */
+    /** Colsubsidio es caja de compensación y opera servicios de salud:
+     *  la vigilan Supersubsidio y Supersalud, las dos. Nunca la
+     *  superintendencia que vigila a las aseguradoras. */
     nota: "Colsubsidio es una caja de compensación familiar.",
   },
 
