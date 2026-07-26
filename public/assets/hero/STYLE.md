@@ -1,5 +1,14 @@
 # Hero Illustration Style
 
+> Esta guía describe únicamente el estilo visual de los assets ilustrados
+> del Hero. No modifica ni reemplaza la identidad visual oficial de
+> Colsubsidio. La interfaz continúa utilizando exclusivamente el sistema
+> de diseño oficial del proyecto.
+>
+> La paleta de más abajo es la del render 3D, no la del proyecto. Los
+> tokens de marca viven en `app/globals.css` bajo `@theme` y son los
+> únicos válidos en la interfaz.
+
 ## Style
 - Cute 3D illustration
 - Soft rounded shapes
